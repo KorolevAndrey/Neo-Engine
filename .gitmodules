@@ -1,0 +1,3 @@
+[submodule "Engine/src/ext/stb"]
+	path = Engine/src/ext/stb
+	url = https://github.com/nothings/stb

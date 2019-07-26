@@ -1,3 +1,6 @@
 [submodule "Engine/src/ext/stb"]
 	path = Engine/src/ext/stb
 	url = https://github.com/nothings/stb
+[submodule "Engine/src/ext/imgui"]
+	path = Engine/src/ext/imgui
+	url = https://github.com/ocornut/imgui

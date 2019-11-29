@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\jaafe\OneDrive\Code\C\Neo\Engine\src\ext\bullet3-2.88\src\BulletSoftBody\btSoftBody.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jaafe\OneDrive\Code\C\Neo\Engine\src\ext\bullet3-2.88\src\BulletSoftBody\btSoftBodyConcaveCollisionAlgorithm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jaafe\OneDrive\Code\C\Neo\Engine\src\ext\bullet3-2.88\src\BulletSoftBody\btSoftBodyHelpers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jaafe\OneDrive\Code\C\Neo\Engine\src\ext\bullet3-2.88\src\BulletSoftBody\btSoftBodyRigidBodyCollisionConfiguration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jaafe\OneDrive\Code\C\Neo\Engine\src\ext\bullet3-2.88\src\BulletSoftBody\btSoftRigidCollisionAlgorithm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jaafe\OneDrive\Code\C\Neo\Engine\src\ext\bullet3-2.88\src\BulletSoftBody\btSoftRigidDynamicsWorld.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jaafe\OneDrive\Code\C\Neo\Engine\src\ext\bullet3-2.88\src\BulletSoftBody\btSoftMultiBodyDynamicsWorld.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jaafe\OneDrive\Code\C\Neo\Engine\src\ext\bullet3-2.88\src\BulletSoftBody\btSoftSoftCollisionAlgorithm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\jaafe\OneDrive\Code\C\Neo\Engine\src\ext\bullet3-2.88\src\BulletSoftBody\btDefaultSoftBodySolver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\Users\jaafe\OneDrive\Code\C\Neo\Engine\src\ext\bullet3-2.88\src\BulletSoftBody\btSoftBody.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jaafe\OneDrive\Code\C\Neo\Engine\src\ext\bullet3-2.88\src\BulletSoftBody\btSoftBodyData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jaafe\OneDrive\Code\C\Neo\Engine\src\ext\bullet3-2.88\src\BulletSoftBody\btSoftBodyConcaveCollisionAlgorithm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jaafe\OneDrive\Code\C\Neo\Engine\src\ext\bullet3-2.88\src\BulletSoftBody\btSoftBodyHelpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jaafe\OneDrive\Code\C\Neo\Engine\src\ext\bullet3-2.88\src\BulletSoftBody\btSoftBodyRigidBodyCollisionConfiguration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jaafe\OneDrive\Code\C\Neo\Engine\src\ext\bullet3-2.88\src\BulletSoftBody\btSoftRigidCollisionAlgorithm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jaafe\OneDrive\Code\C\Neo\Engine\src\ext\bullet3-2.88\src\BulletSoftBody\btSoftRigidDynamicsWorld.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jaafe\OneDrive\Code\C\Neo\Engine\src\ext\bullet3-2.88\src\BulletSoftBody\btSoftMultiBodyDynamicsWorld.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jaafe\OneDrive\Code\C\Neo\Engine\src\ext\bullet3-2.88\src\BulletSoftBody\btSoftSoftCollisionAlgorithm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jaafe\OneDrive\Code\C\Neo\Engine\src\ext\bullet3-2.88\src\BulletSoftBody\btSparseSDF.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jaafe\OneDrive\Code\C\Neo\Engine\src\ext\bullet3-2.88\src\BulletSoftBody\btSoftBodySolvers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jaafe\OneDrive\Code\C\Neo\Engine\src\ext\bullet3-2.88\src\BulletSoftBody\btDefaultSoftBodySolver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\jaafe\OneDrive\Code\C\Neo\Engine\src\ext\bullet3-2.88\src\BulletSoftBody\btSoftBodySolverVertexBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\jaafe\OneDrive\Code\C\Neo\Engine\src\ext\bullet3-2.88\src\BulletSoftBody\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{FA46F34A-9AAA-337F-A88C-C124920208F5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{49321D28-857F-3EBD-9636-101DE50880DF}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

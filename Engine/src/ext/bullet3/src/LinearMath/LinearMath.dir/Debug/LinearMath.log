@@ -1,0 +1,17 @@
+﻿  Building Custom Rule C:/Users/jaafe/OneDrive/Code/C/Neo/Engine/src/ext/bullet3-2.88/src/LinearMath/CMakeLists.txt
+  CMake does not need to re-run because C:/Users/jaafe/OneDrive/Code/C/Neo/Engine/src/ext/bullet3-2.88/src/LinearMath/CMakeFiles/generate.stamp is up-to-date.
+  btAlignedAllocator.cpp
+  btConvexHull.cpp
+  btConvexHullComputer.cpp
+  btGeometryUtil.cpp
+  btPolarDecomposition.cpp
+  btQuickprof.cpp
+  btSerializer.cpp
+  btSerializer64.cpp
+  btThreads.cpp
+  btVector3.cpp
+  btTaskScheduler.cpp
+  btThreadSupportPosix.cpp
+  btThreadSupportWin32.cpp
+  Generating Code...
+  LinearMath.vcxproj -> C:\Users\jaafe\OneDrive\Code\C\Neo\Engine\src\ext\bullet3-2.88\lib\Debug\LinearMath_Debug.lib

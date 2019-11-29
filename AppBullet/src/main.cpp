@@ -1,5 +1,7 @@
 #include <Engine.hpp>
 
+#include "BulletSystem.hpp"
+#include "BulletShader.hpp"
 #include "Shader/PhongShader.hpp"
 #include "Shader/AlphaTestShader.hpp"
 
@@ -54,27 +56,29 @@ int main() {
     Camera camera(45.f, 1.f, 100.f, glm::vec3(0, 0.6f, 5), 0.4f, 7.f);
     Engine::addComponent<MainCameraComponent>(&camera.camera->getGameObject());
 
-    Light(glm::vec3(0.f, 2.f, 20.f), glm::vec3(1.f), glm::vec3(0.6, 0.2, 0.f));
+    // Light(glm::vec3(0.f, 2.f, 20.f), glm::vec3(1.f), glm::vec3(0.6, 0.2, 0.f));
 
-    /* Cube object */
-    Renderable cube(Library::getMesh("cube"), glm::vec3(0.f, 0.5f, 0.f));
-    Engine::addComponent<renderable::PhongRenderable>(cube.gameObject);
-    Engine::addComponent<MaterialComponent>(cube.gameObject, 0.2f, glm::vec3(1.f, 0.f, 1.f), glm::vec3(1.f));
-    Engine::addComponent<SelectableComponent>(cube.gameObject);
-    Engine::addComponent<BoundingBoxComponent>(cube.gameObject, Library::getMesh("cube"));
+    // /* Cube object */
+    // Renderable cube(Library::getMesh("cube"), glm::vec3(0.f, 0.5f, 0.f));
+    // Engine::addComponent<renderable::PhongRenderable>(cube.gameObject);
+    // Engine::addComponent<MaterialComponent>(cube.gameObject, 0.2f, glm::vec3(1.f, 0.f, 1.f), glm::vec3(1.f));
+    // Engine::addComponent<SelectableComponent>(cube.gameObject);
+    // Engine::addComponent<BoundingBoxComponent>(cube.gameObject, Library::getMesh("cube"));
 
     /* Ground plane */
     Renderable plane(Library::getMesh("quad"), glm::vec3(0.f), glm::vec3(15.f), glm::vec3(-Util::PI() / 2.f, 0.f, 0.f));
     Engine::addComponent<renderable::AlphaTestRenderable>(plane.gameObject);
     Engine::addComponent<DiffuseMapComponent>(plane.gameObject, *Library::getTexture("grid.png"));
 
-    /* Systems - order matters! */
+    // /* Systems - order matters! */
     Engine::addSystem<CameraControllerSystem>();
+    Engine::addSystem<BulletSystem>();
 
     /* Init renderer */
     Renderer::init("shaders/", camera.camera);
     Renderer::addSceneShader<PhongShader>();
     Renderer::addSceneShader<AlphaTestShader>();
+    Renderer::addSceneShader<BulletShader>("bullet.vert", "bullet.frag");
 
     /* Run */
     Engine::run();

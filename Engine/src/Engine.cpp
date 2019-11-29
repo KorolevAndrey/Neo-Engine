@@ -204,6 +204,11 @@ namespace neo {
         }
         _processKillQueue();
 
+        // Clean up Systems
+        for (auto& system : mSystems) {
+            system.second->shutdown();
+        }
+
         // Clean up Renderer
         Renderer::shutDown();
 

@@ -81,6 +81,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AppMetaballs", "AppMetaball
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AppBullet", "AppBullet\AppBullet.vcxproj", "{34FFCD6E-D9E0-4BE3-9F40-9CF448FDACC4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2C8EFE39-BFDB-4561-A025-B086D478161C} = {2C8EFE39-BFDB-4561-A025-B086D478161C}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

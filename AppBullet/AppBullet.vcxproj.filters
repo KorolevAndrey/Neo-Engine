@@ -21,5 +21,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
+    <None Include="shaders\bullet.vert" />
+    <None Include="shaders\bullet.frag" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\BulletSystem.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BulletShader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

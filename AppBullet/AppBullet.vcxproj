@@ -121,6 +121,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
+    <None Include="shaders\bullet.frag" />
+    <None Include="shaders\bullet.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\BulletShader.hpp" />
+    <ClInclude Include="src\BulletSystem.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

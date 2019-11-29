@@ -1,0 +1,8 @@
+﻿  Building Custom Rule C:/Users/jaafe/OneDrive/Code/C/Neo/Engine/src/ext/bullet3-2.88/src/BulletInverseDynamics/CMakeLists.txt
+  CMake does not need to re-run because C:/Users/jaafe/OneDrive/Code/C/Neo/Engine/src/ext/bullet3-2.88/src/BulletInverseDynamics/CMakeFiles/generate.stamp is up-to-date.
+  IDMath.cpp
+  MultiBodyTree.cpp
+  MultiBodyTreeInitCache.cpp
+  MultiBodyTreeImpl.cpp
+  Generating Code...
+  BulletInverseDynamics.vcxproj -> C:\Users\jaafe\OneDrive\Code\C\Neo\Engine\src\ext\bullet3-2.88\lib\Debug\BulletInverseDynamics_Debug.lib

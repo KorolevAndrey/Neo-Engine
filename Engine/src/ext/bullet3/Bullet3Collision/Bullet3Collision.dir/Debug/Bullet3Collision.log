@@ -1,0 +1,9 @@
+﻿  Building Custom Rule C:/Users/jaafe/OneDrive/Code/C/Neo/Engine/src/ext/bullet3-2.88/src/Bullet3Collision/CMakeLists.txt
+  CMake does not need to re-run because C:/Users/jaafe/OneDrive/Code/C/Neo/Engine/src/ext/bullet3-2.88/src/Bullet3Collision/CMakeFiles/generate.stamp is up-to-date.
+  b3DynamicBvh.cpp
+  b3DynamicBvhBroadphase.cpp
+  b3OverlappingPairCache.cpp
+  b3ConvexUtility.cpp
+  b3CpuNarrowPhase.cpp
+  Generating Code...
+  Bullet3Collision.vcxproj -> C:\Users\jaafe\OneDrive\Code\C\Neo\Engine\src\ext\bullet3-2.88\lib\Debug\Bullet3Collision_Debug.lib

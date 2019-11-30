@@ -1,6 +1,7 @@
 #include <Engine.hpp>
 
 #include "BulletSystem.hpp"
+#include "BulletShader.hpp"
 #include "Shader/PhongShader.hpp"
 #include "Shader/AlphaTestShader.hpp"
 
@@ -70,6 +71,8 @@ int main() {
     Renderable plane(Library::getMesh("quad"), glm::vec3(0.f), glm::vec3(15.f), glm::vec3(-Util::PI() / 2.f, 0.f, 0.f));
     Engine::addComponent<renderable::AlphaTestRenderable>(plane.gameObject);
     Engine::addComponent<DiffuseMapComponent>(plane.gameObject, *Library::getTexture("grid.png"));
+    Engine::addComponent<BulletCubeRigidBodyComponent>(plane.gameObject, 0.f, glm::vec3(0.f));
+    Engine::addComponent<RegisterBulletComponent>(plane.gameObject);
 
     /* Systems - order matters! */
     Engine::addSystem<CameraControllerSystem>();
@@ -79,6 +82,7 @@ int main() {
     Renderer::init("shaders/", camera.camera);
     Renderer::addSceneShader<PhongShader>();
     Renderer::addSceneShader<AlphaTestShader>();
+    Renderer::addSceneShader<BulletShader>();
 
     /* Run */
     Engine::run();

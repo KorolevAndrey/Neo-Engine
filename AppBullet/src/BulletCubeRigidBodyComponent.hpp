@@ -28,7 +28,7 @@ public:
     }
 
     virtual void init() {
-        btBoxShape* colShape = new btBoxShape(btVector3(0.5f, 0.5f, 0.5f));
+        colShape = new btBoxShape(btVector3(0.5f, 0.5f, 0.5f));
         colShape->calculateLocalInertia(mass, localInertia);
 
         myMotionState = new btDefaultMotionState(startTransform);

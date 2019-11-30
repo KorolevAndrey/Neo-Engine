@@ -64,15 +64,9 @@ public:
             auto spatial = comp->getGameObject().getComponentByType<SpatialComponent>();
             NEO_ASSERT(spatial, "Attempting to register a bullet body without a SpatialComponent");
 
-            btTransform objTransform;
-            objTransform.setFromOpenGLMatrix(glm::value_ptr(spatial->getModelMatrix()));
-
             if (auto cube = comp->getGameObject().getComponentByType<BulletCubeRigidBodyComponent>()) {
-                cube->startTransform.setOrigin(btVector3(
-                    spatial->getPosition().x,
-                    spatial->getPosition().y,
-                    spatial->getPosition().z));
-                cube->myMotionState->setWorldTransform(objTransform);
+                cube->startTransform.setFromOpenGLMatrix(glm::value_ptr(spatial->getModelMatrix()));
+                cube->myMotionState->setWorldTransform(cube->startTransform);
                 cube->body->setMotionState(cube->myMotionState);
 
                 mDynamicsWorld->addRigidBody(cube->body);

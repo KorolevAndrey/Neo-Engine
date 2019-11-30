@@ -126,6 +126,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BulletCubeRigidBodyComponent.hpp" />
+    <ClInclude Include="src\BulletShader.hpp" />
     <ClInclude Include="src\BulletSystem.hpp" />
     <ClInclude Include="src\RegisterBulletComponent.hpp" />
   </ItemGroup>

@@ -3,6 +3,9 @@
 #include "Systems/System.hpp"
 #include "Engine.hpp"
 
+#include "BulletCubeRigidBodyComponent.hpp"
+#include "RegisterBulletComponent.hpp"
+
 #include "ext/bullet3/btBulletDynamicsCommon.h"
 
 using namespace neo;
@@ -11,13 +14,11 @@ class BulletSystem : public System {
 
 public:
 
-    btAlignedObjectArray <btCollisionShape*> mCollisionShapes;
     btBroadphaseInterface* mBroadphase;
     btCollisionDispatcher* mDispatcher;
     btConstraintSolver* mSolver;
     btDefaultCollisionConfiguration* mCollisionConfiguration;
     btDynamicsWorld* mDynamicsWorld;
-    std::vector<btRigidBody*> mBoxesRB;
 
     BulletSystem() :
         System("Bullet System")
@@ -27,15 +28,15 @@ public:
         mCollisionConfiguration = new btDefaultCollisionConfiguration();
         mDispatcher = new btCollisionDispatcher(mCollisionConfiguration);
         mBroadphase = new btDbvtBroadphase();
-        btSequentialImpulseConstraintSolver* sol = new
-            btSequentialImpulseConstraintSolver;
+        btSequentialImpulseConstraintSolver* sol = new btSequentialImpulseConstraintSolver;
         mSolver = sol;
         mDynamicsWorld = new
             btDiscreteDynamicsWorld(mDispatcher, mBroadphase, mSolver,
                 mCollisionConfiguration);
-        mDynamicsWorld->setGravity(btVector3(0, -10, 0));
+        mDynamicsWorld->setGravity(btVector3(0, -4, 0));
+
+
         btBoxShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
-        mCollisionShapes.push_back(groundShape);
         btTransform groundTransform;
         groundTransform.setIdentity();
         groundTransform.setOrigin(btVector3(0, -50, 0));
@@ -43,34 +44,44 @@ public:
         btRigidBody::btRigidBodyConstructionInfo rbInfo(btScalar(0), myMotionState, groundShape, btVector3(0, 0, 0));
         btRigidBody* body = new btRigidBody(rbInfo);
         mDynamicsWorld->addRigidBody(body);
-        // ---
-        const float SCALING = 0.5f;
-        btBoxShape* colShape = new btBoxShape(btVector3(SCALING * 1, SCALING *
-            1, SCALING * 1));
-        mCollisionShapes.push_back(colShape);
-        // ---
-        btTransform startTransform;
-        startTransform.setIdentity();
-        btScalar mass(1.0f);
-        btVector3 localInertia(0, 0, 0);
-        colShape->calculateLocalInertia(mass, localInertia);
-        for (int i = 0; i < 200; i++) {
-            startTransform.setOrigin(SCALING*btVector3(
-                btScalar(Util::genRandom(-5.f, 5.f)),
-                btScalar(2.0*i + 10),
-                btScalar(Util::genRandom(-5.f, 5.f))));
-            btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-            btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState
-                , colShape, localInertia);
-            btRigidBody* body = new btRigidBody(rbInfo);
-            mBoxesRB.push_back(body);
-            mDynamicsWorld->addRigidBody(body);
-        }
     }
 
     virtual void update(const float dt) override {
-        if (mDynamicsWorld) {
-            mDynamicsWorld->stepSimulation(dt);
+        /* Init new components */
+        for (auto& comp : Engine::getComponents<RegisterBulletComponent>()) {
+            auto spatial = comp->getGameObject().getComponentByType<SpatialComponent>();
+            NEO_ASSERT(spatial, "Attempting to register a bullet body without a SpatialComponent");
+
+            btTransform objTransform;
+            objTransform.setFromOpenGLMatrix(glm::value_ptr(spatial->getModelMatrix()));
+
+            if (auto cube = comp->getGameObject().getComponentByType<BulletCubeRigidBodyComponent>()) {
+                cube->startTransform.setOrigin(btVector3(
+                    spatial->getPosition().x,
+                    spatial->getPosition().y,
+                    spatial->getPosition().z));
+                cube->myMotionState->setWorldTransform(objTransform);
+                cube->body->setMotionState(cube->myMotionState);
+
+                mDynamicsWorld->addRigidBody(cube->body);
+            }
+
+            Engine::removeComponent<RegisterBulletComponent>(*comp);
+        }
+
+        /* Run simulation */
+        mDynamicsWorld->stepSimulation(dt);
+
+        /* Update spatials */
+        for (auto& cube : Engine::getComponentTuples<BulletCubeRigidBodyComponent, SpatialComponent>()) {
+            btTransform worldTransform;
+            cube->get<BulletCubeRigidBodyComponent>()->body->getMotionState()->getWorldTransform(worldTransform);
+
+
+            glm::mat4 M;
+            worldTransform.getOpenGLMatrix(glm::value_ptr(M));
+            cube->get<SpatialComponent>()->setPosition(glm::vec3(M[3][0], M[3][1], M[3][2]));
+            cube->get<SpatialComponent>()->setOrientation(glm::mat3(M));
         }
     }
 
@@ -87,12 +98,6 @@ public:
             mDynamicsWorld->removeCollisionObject(obj);
             delete obj;
         }
-        for (int j = 0; j < mCollisionShapes.size(); j++)
-        {
-            btCollisionShape* shape = mCollisionShapes[j];
-            delete shape;
-        }
-        mCollisionShapes.clear();
         delete mDynamicsWorld;
         delete mSolver;
         delete mBroadphase;

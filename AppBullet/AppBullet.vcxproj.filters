@@ -28,7 +28,10 @@
     <ClInclude Include="src\BulletSystem.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\BulletShader.hpp">
+    <ClInclude Include="src\BulletCubeRigidBodyComponent.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RegisterBulletComponent.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

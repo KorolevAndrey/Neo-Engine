@@ -125,8 +125,9 @@
     <None Include="shaders\bullet.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\BulletShader.hpp" />
+    <ClInclude Include="src\BulletCubeRigidBodyComponent.hpp" />
     <ClInclude Include="src\BulletSystem.hpp" />
+    <ClInclude Include="src\RegisterBulletComponent.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

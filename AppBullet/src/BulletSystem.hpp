@@ -45,16 +45,6 @@ public:
         mSolver = sol;
         mDynamicsWorld = new btDiscreteDynamicsWorld(mDispatcher, mBroadphase, mSolver, mCollisionConfiguration);
         mDynamicsWorld->setGravity(btVector3(0, -4, 0));
-
-
-        btBoxShape* groundShape = new btBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));
-        btTransform groundTransform;
-        groundTransform.setIdentity();
-        groundTransform.setOrigin(btVector3(0, -50, 0));
-        btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
-        btRigidBody::btRigidBodyConstructionInfo rbInfo(btScalar(0), myMotionState, groundShape, btVector3(0, 0, 0));
-        btRigidBody* body = new btRigidBody(rbInfo);
-        mDynamicsWorld->addRigidBody(body);
     }
 
     virtual void update(const float dt) override {
@@ -65,10 +55,18 @@ public:
             NEO_ASSERT(spatial, "Attempting to register a bullet body without a SpatialComponent");
 
             if (auto cube = comp->getGameObject().getComponentByType<BulletCubeRigidBodyComponent>()) {
-                cube->startTransform.setFromOpenGLMatrix(glm::value_ptr(spatial->getModelMatrix()));
+                cube->startTransform.setOrigin(btVector3(
+                    spatial->getPosition().x,
+                    spatial->getPosition().y,
+                    spatial->getPosition().z
+                ));
+                cube->colShape->setLocalScaling(btVector3(
+                    spatial->getScale().x,
+                    spatial->getScale().y,
+                    spatial->getScale().z
+                ));
                 cube->myMotionState->setWorldTransform(cube->startTransform);
                 cube->body->setMotionState(cube->myMotionState);
-
                 mDynamicsWorld->addRigidBody(cube->body);
             }
 

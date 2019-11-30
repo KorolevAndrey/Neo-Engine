@@ -55,10 +55,12 @@ public:
             NEO_ASSERT(spatial, "Attempting to register a bullet body without a SpatialComponent");
 
             if (auto cube = comp->getGameObject().getComponentByType<BulletCubeRigidBodyComponent>()) {
+                auto camera = Engine::getComponentTuple<MainCameraComponent, CameraComponent, SpatialComponent>();
+                glm::vec3 d = camera->get<SpatialComponent>()->getLookDir();
                 cube->startTransform.setOrigin(btVector3(
-                    spatial->getPosition().x,
-                    spatial->getPosition().y,
-                    spatial->getPosition().z
+                    spatial->getPosition().x + 3.2 * d.x + Util::genRandom(-0.5f, 0.5f),
+                    spatial->getPosition().y + 3.2 * d.y + Util::genRandom(-0.5f, 0.5f),
+                    spatial->getPosition().z + 3.2 * d.z + Util::genRandom(-0.5f, 0.5f)
                 ));
                 cube->colShape->setLocalScaling(btVector3(
                     spatial->getScale().x,
@@ -67,7 +69,10 @@ public:
                 ));
                 cube->myMotionState->setWorldTransform(cube->startTransform);
                 cube->body->setMotionState(cube->myMotionState);
+                cube->body->setFriction(2.f);
                 mDynamicsWorld->addRigidBody(cube->body);
+
+                cube->body->applyCentralForce(btVector3(500 * d.x, 500 * d.y, 500 * d.z));
             }
 
             Engine::removeComponent<RegisterBulletComponent>(*comp);
@@ -91,6 +96,25 @@ public:
             cube->get<SpatialComponent>()->setOrientation(glm::mat3(M));
         }
         MICROPROFILE_LEAVE();
+
+        static float t = 0.f;
+        t += dt;
+
+        if (t > 0.1f) {
+            if (Keyboard::isKeyPressed(GLFW_KEY_V)) {
+                auto camera = Engine::getComponentTuple<MainCameraComponent, CameraComponent, SpatialComponent>();
+                auto gameObject = &Engine::createGameObject();
+                Engine::addComponent<MeshComponent>(gameObject, Library::getMesh("cube"));
+                Engine::addComponent<SpatialComponent>(gameObject, camera->get<SpatialComponent>()->getPosition(), Util::genRandomVec3());
+                Engine::addComponent<renderable::PhongRenderable>(gameObject);
+                Engine::addComponent<MaterialComponent>(gameObject, 0.2f, Util::genRandomVec3());
+                Engine::addComponent<RegisterBulletComponent>(gameObject);
+                auto& rb = Engine::addComponent<BulletCubeRigidBodyComponent>(gameObject);
+                rb.startTransform.setRotation(btQuaternion(Util::genRandom(0.f, 360.f), Util::genRandom(0.f, 360.f), Util::genRandom(0.f, 360.f)));
+
+                t = 0.f;
+            }
+        }
     }
 
     virtual void shutdown() override {

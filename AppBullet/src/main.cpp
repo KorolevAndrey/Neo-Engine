@@ -68,9 +68,9 @@ int main() {
     }
 
     /* Ground plane */
-    Renderable plane(Library::getMesh("cube"), glm::vec3(0.f, 0.f, 0.f), glm::vec3(15.f, 0.1f, 15.f));
-    Engine::addComponent<renderable::AlphaTestRenderable>(plane.gameObject);
-    Engine::addComponent<DiffuseMapComponent>(plane.gameObject, *Library::getTexture("grid.png"));
+    Renderable plane(Library::getMesh("cube"), glm::vec3(0.f, 0.f, 0.f), glm::vec3(150.f, 0.01f, 150.f));
+    Engine::addComponent<renderable::PhongRenderable>(plane.gameObject);
+    Engine::addComponent<MaterialComponent>(plane.gameObject, 0.4f, glm::vec3(0.4f), glm::vec3(1.f));
     Engine::addComponent<BulletCubeRigidBodyComponent>(plane.gameObject, 0.f, glm::vec3(0.f));
     Engine::addComponent<RegisterBulletComponent>(plane.gameObject);
 

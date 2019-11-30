@@ -57,18 +57,11 @@ int main() {
 
     Light(glm::vec3(0.f, 2.f, 20.f), glm::vec3(1.f), glm::vec3(0.6, 0.2, 0.f));
 
-    // /* Cube object */
-    // Renderable cube(Library::getMesh("cube"), glm::vec3(0.f, 0.5f, 0.f));
-    // Engine::addComponent<renderable::PhongRenderable>(cube.gameObject);
-    // Engine::addComponent<MaterialComponent>(cube.gameObject, 0.2f, glm::vec3(1.f, 0.f, 1.f), glm::vec3(1.f));
-    // Engine::addComponent<SelectableComponent>(cube.gameObject);
-    // Engine::addComponent<BoundingBoxComponent>(cube.gameObject, Library::getMesh("cube"));
-    for (int i = 0; i < 100; i++) {
+    /* Cube object */
+    for (int i = 0; i < 10; i++) {
         Renderable cube(Library::getMesh("cube"), glm::vec3(Util::genRandom(-1.f, 1.f), i * 2, Util::genRandom(-1.f, 1.f)));
         Engine::addComponent<renderable::PhongRenderable>(cube.gameObject);
         Engine::addComponent<MaterialComponent>(cube.gameObject, 0.2f, Util::genRandomVec3(), glm::vec3(1.f));
-        Engine::addComponent<SelectableComponent>(cube.gameObject);
-        Engine::addComponent<BoundingBoxComponent>(cube.gameObject, Library::getMesh("cube"));
         Engine::addComponent<BulletCubeRigidBodyComponent>(cube.gameObject);
         Engine::addComponent<RegisterBulletComponent>(cube.gameObject);
     }

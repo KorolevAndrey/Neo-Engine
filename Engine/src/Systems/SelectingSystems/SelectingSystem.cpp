@@ -4,10 +4,6 @@
 namespace neo {
 
     void SelectingSystem::init() {
-        // Operate on unselected objects
-        for (auto selectable : Engine::getComponents<SelectableComponent>()) {
-            mResetOperation(selectable);
-        }
     }
 
     void SelectingSystem::update(const float dt) {
@@ -45,7 +41,7 @@ namespace neo {
                 bool objectFound = false;
                 for (float i = 0.f; i < maxDistance; i += maxDistance / static_cast<float>(mMaxMarches)) {
                     glm::vec3 raySample = mouseRay->mPosition + mouseRay->mDirection * i;
-                    if (selectableBox->intersect(raySample)) {
+                    if (selectableBox->intersect(raySample) && !selectable->mGameObject.getComponentByType<SelectedComponent>()) {
                         // Add and operate on new selected
                         mSelectOperation(&Engine::addComponent<SelectedComponent>(&selectable->mGameObject), mouseRay, i);
                         objectFound = true;
@@ -53,15 +49,14 @@ namespace neo {
                     }
                 }
                 if (objectFound) {
+                    // Operate on unselected objects
+                    for (auto selectable : Engine::getComponents<SelectableComponent>()) {
+                        if (!selectable->getGameObject().getComponentByType<SelectedComponent>()) {
+                            mResetOperation(selectable);
+                        }
+                    }
                     break;
                 }
-            }
-        }
-
-        // Operate on unselected objects
-        for (auto selectable : Engine::getComponents<SelectableComponent>()) {
-            if (!selectable->getGameObject().getComponentByType<SelectedComponent>()) {
-                mResetOperation(selectable);
             }
         }
     }

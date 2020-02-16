@@ -23,19 +23,20 @@ namespace neo {
 
     // TODO - instanced
     void Mesh::draw(unsigned size) const {
-        const auto& positions = getVBO(VertexType::Position);
+        if (auto positions = getVBO(VertexType::Position)) {
 
-        CHECK_GL(glBindVertexArray(mVAOID));
-        if (mElementVBO) {
-            CHECK_GL(glDrawElements(mPrimitiveType, size ? size : mElementVBO->bufferSize, GL_UNSIGNED_INT, nullptr));
+            CHECK_GL(glBindVertexArray(mVAOID));
+            if (mElementVBO) {
+                CHECK_GL(glDrawElements(mPrimitiveType, size ? size : mElementVBO->bufferSize, GL_UNSIGNED_INT, nullptr));
+            }
+            else if (size) {
+                CHECK_GL(glDrawArrays(mPrimitiveType, 0, size));
+            }
+            else {
+                CHECK_GL(glDrawArrays(mPrimitiveType, 0, positions->bufferSize / positions->stride));
+            }
+            CHECK_GL(glBindVertexArray(0));
         }
-        else if (size) {
-            CHECK_GL(glDrawArrays(mPrimitiveType, 0, size));
-        }
-        else {
-            CHECK_GL(glDrawArrays(mPrimitiveType, 0, positions.bufferSize / positions.stride));
-        }
-        CHECK_GL(glBindVertexArray(0));
     }
 
     void Mesh::addVertexBuffer(VertexType type, unsigned attribArray, unsigned stride, const std::vector<float>& buffer) {
@@ -113,10 +114,16 @@ namespace neo {
         mVBOs.erase(type);
     }
 
-    const VertexBuffer& Mesh::getVBO(VertexType type) const {
+    const VertexBuffer* Mesh::getVBO(VertexType type) const {
         auto vbo = mVBOs.find(type);
-        NEO_ASSERT(vbo != mVBOs.end(), "Attempting to retrieve a VertexBuffer that doesn't exist");
-        return vbo->second;
+        if (vbo != mVBOs.end()) {
+            return &vbo->second;
+        }
+        return nullptr;
+    }
+
+    const VertexBuffer* Mesh::getIBO() const {
+        return mElementVBO ? &mElementVBO.value() : nullptr;
     }
 
     void Mesh::addElementBuffer(const std::vector<unsigned>& buffer) {

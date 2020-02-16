@@ -7,6 +7,11 @@
 namespace neo {
     class Mesh;
 
+namespace neo {
+    struct Material;
+    class Mesh;
+    class Texture;
+
     namespace renderable {
 
         class PhongRenderable : public Component {
@@ -21,7 +26,6 @@ namespace neo {
                 mDiffuseMap(diffuseMap),
                 mMaterial(material)
             {}
-
         };
     }
 }

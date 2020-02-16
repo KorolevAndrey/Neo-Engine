@@ -85,9 +85,6 @@
     <ClInclude Include="src\Renderer\GLObjects\Texture2D.hpp" />
     <ClInclude Include="src\Renderer\GLObjects\Texture3D.hpp" />
     <ClInclude Include="src\Renderer\GLObjects\Material.hpp" />
-    <ClInclude Include="src\ECS\Component\RenderableComponent\MeshComponent.hpp" />
-    <ClInclude Include="src\ECS\Component\RenderableComponent\LineMeshComponent.hpp" />
-    <ClInclude Include="src\ECS\Components.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Loader\Loader.cpp" />

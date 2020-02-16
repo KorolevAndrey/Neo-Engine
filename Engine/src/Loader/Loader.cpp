@@ -101,7 +101,7 @@ namespace neo {
         for (auto& shape : shapes) {
             Asset asset;
 
-            asset.mesh = new Mesh;
+            asset.mesh = Library::createEmptyMesh(shape.name);
 
             /* Upload */
             asset.mesh->mPrimitiveType = GL_TRIANGLE_STRIP;

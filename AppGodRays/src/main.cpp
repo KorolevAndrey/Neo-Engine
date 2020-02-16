@@ -73,16 +73,33 @@ int main() {
 
     Light(glm::vec3(0.f, 2.f, -20.f), 12.f, glm::vec3(1.f), glm::vec3(0.6, 0.2, 0.f));
 
-    /* Trees */
-    Library::loadTexture("PineTexture.png");
-    Library::loadMesh("PineTree3.obj");
-    for (int i = 0; i < 15; i++) {
-        Renderable cube(Library::getMesh("PineTree3.obj"), glm::vec3(Util::genRandom(-7.5f, 7.5f), 0.5f, Util::genRandom(-7.5f, 7.5f)), glm::vec3(Util::genRandom(0.7f, 1.3f)), glm::vec3(0.f, Util::genRandom(0.f, 360.f), 0.f));
-        Material material;
-        material.mAmbient = glm::vec3(0.2f);
-        material.mDiffuse = glm::vec3(0.f);
-        Engine::addComponent<renderable::PhongRenderable>(cube.gameObject, *Library::getTexture("PineTexture.png"), material);
-        Engine::addComponent<SunOccluderComponent>(cube.gameObject, *Library::getTexture("PineTexture.png"));
+    /* Sponza object */
+    {
+        auto asset = Loader::loadMultiAsset("sponza.obj");
+
+        GameObject& parent = Engine::createGameObject();
+        Engine::addComponent<SpatialComponent>(&parent, glm::vec3(0.f), glm::vec3(0.2f));
+
+        for (auto& a : asset) {
+            auto& phong = Engine::addComponent<renderable::PhongRenderable>(&parent);
+            auto& occluder = Engine::addComponent<SunOccluderComponent>(&parent);
+            phong.mesh = a.mesh;
+            occluder.mesh = a.mesh;
+            phong.material = a.material;
+            if (a.diffuse_tex) {
+                phong.diffuseMap = a.diffuse_tex;
+                occluder.alphaMap = a.diffuse_tex;
+            }
+            if (a.specular_tex) {
+                phong.specularMap = a.specular_tex;
+            }
+            if (a.ambient_tex) {
+                phong.ambientMap = a.ambient_tex;
+            }
+            if (a.displacement_tex) {
+                phong.normalMap = a.displacement_tex;
+            }
+        }
     }
 
     /* Ground plane */

@@ -35,28 +35,15 @@ class GodRayOccluderShader : public Shader {
             loadUniform("P", camera->get<CameraComponent>()->getProj());
             loadUniform("V", camera->get<CameraComponent>()->getView());
 
-            for (auto& renderable : Engine::getComponentTuples<SunOccluderComponent, MeshComponent, SpatialComponent>()) {
-                auto renderableSpatial = renderable->get<SpatialComponent>();
-
-                // VFC
-                if (const auto& boundingBox = renderable->mGameObject.getComponentByType<BoundingBoxComponent>()) {
-                    if (const auto& frustumPlanes = camera->mGameObject.getComponentByType<FrustumComponent>()) {
-                        float radius = glm::max(glm::max(renderableSpatial->getScale().x, renderableSpatial->getScale().y), renderableSpatial->getScale().z) * boundingBox->getRadius();
-                        if (!frustumPlanes->isInFrustum(renderableSpatial->getPosition(), radius)) {
-                            continue;
-                        }
-                    }
-                }
+            for (auto& renderableIt : Engine::getComponentTuples<SunOccluderComponent, SpatialComponent>()) {
+                auto renderable = renderableIt->get<SunOccluderComponent>();
+                auto renderableSpatial = renderableIt->get<SpatialComponent>();
 
                 loadUniform("M", renderableSpatial->getModelMatrix());
 
-                /* Bind texture */
-                loadTexture("alphaMap", renderable->get<SunOccluderComponent>()->mAlphaMap);
+                loadTexture("alphaMap", *renderable->alphaMap);
 
-                /* DRAW */
-                renderable->get<MeshComponent>()->mMesh.draw();
+                renderable->mesh->draw();
             }
-
-            unbind();
         }
 };

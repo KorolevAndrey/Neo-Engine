@@ -444,7 +444,9 @@ namespace neo {
                 }
                 if (ImGui::TreeNodeEx("Meshes", ImGuiTreeNodeFlags_DefaultOpen)) {
                     for (auto & m : Library::mMeshes) {
-                        ImGui::Text("%s", m.first.c_str());
+                        auto posBuf = m.second->getVBO(VertexType::Position);
+                        auto elBuf = m.second->getIBO();
+                        ImGui::Text("%s (%d) [%d, %d]", m.first.c_str(), m.second->mVAOID, posBuf ? posBuf->bufferSize : 0, elBuf ? elBuf->bufferSize : 0);
                     }
                     ImGui::TreePop();
                 }

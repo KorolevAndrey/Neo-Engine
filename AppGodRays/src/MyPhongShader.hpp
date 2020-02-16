@@ -56,7 +56,6 @@ public:
                 loadUniform("diffuse", renderable->material.diffuse);
                 loadUniform("specular", renderable->material.specular);
                 loadUniform("shine", renderable->material.shininess);
-
                 loadTexture("ambientMap", *renderable->ambientMap);
                 loadTexture("diffuseMap", *renderable->diffuseMap);
                 loadTexture("specularMap", *renderable->specularMap);

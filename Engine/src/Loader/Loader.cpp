@@ -25,7 +25,7 @@ namespace neo {
         mVerbose = v;
     }
 
-    Mesh* Loader::loadMesh(const std::string &fileName, bool doResize) {
+    Mesh* Loader::loadStitchedMesh(const std::string &fileName, bool doResize) {
         MICROPROFILE_SCOPEI("Loader", "loadMesh", MP_AUTO);
 
         /* Create mesh */
@@ -88,7 +88,6 @@ namespace neo {
     }
 
    std::vector<Asset> Loader::loadMultiAsset(const std::string &fileName) {
-        /* If mesh was not found in map, read it in */
         std::vector<tinyobj::shape_t> shapes;
         std::vector<tinyobj::material_t> objMaterials;
 
@@ -99,10 +98,12 @@ namespace neo {
 
         std::vector<Asset> ret;
 
+        int c = 0;
         for (auto& shape : shapes) {
+            c++;
             Asset asset;
 
-            asset.mesh = Library::createEmptyMesh(shape.name);
+            asset.mesh = Library::createEmptyMesh(fileName + "/" + shape.name + std::to_string(c));
 
             /* Upload */
             asset.mesh->mPrimitiveType = GL_TRIANGLE_STRIP;
@@ -146,16 +147,16 @@ namespace neo {
                     format.mBaseFormat = GL_RGB;
 
                     if (material.ambient_texname.size()) {
-                        asset.ambient_tex = Library::loadTexture(material.ambient_texname, format);
+                        asset.ambientTexture = Library::loadTexture(material.ambient_texname, format);
                     }
                     if (material.diffuse_texname.size()) {
-                        asset.diffuse_tex = Library::loadTexture(material.diffuse_texname, format);
+                        asset.diffuseTexture = Library::loadTexture(material.diffuse_texname, format);
                     }
                     if (material.specular_texname.size()) {
-                        asset.specular_tex = Library::loadTexture(material.specular_texname, format);
+                        asset.speculatTexture = Library::loadTexture(material.specular_texname, format);
                     }
                     if (material.displacement_texname.size()) {
-                        asset.displacement_tex = Library::loadTexture(material.displacement_texname, format);
+                        asset.displacementTexture = Library::loadTexture(material.displacement_texname, format);
                     }
                 }
             }

@@ -75,7 +75,7 @@ int main() {
 
     /* Sponza object */
     {
-        auto asset = Loader::loadMultiAsset("sponza.obj");
+        auto asset = Loader::loadMultiAsset("bmw.obj");
 
         GameObject& parent = Engine::createGameObject();
         Engine::addComponent<SpatialComponent>(&parent, glm::vec3(0.f), glm::vec3(0.2f));
@@ -86,18 +86,18 @@ int main() {
             phong.mesh = a.mesh;
             occluder.mesh = a.mesh;
             phong.material = a.material;
-            if (a.diffuse_tex) {
-                phong.diffuseMap = a.diffuse_tex;
-                occluder.alphaMap = a.diffuse_tex;
+            if (a.diffuseTexture) {
+                phong.diffuseMap = a.diffuseTexture;
+                occluder.alphaMap = a.diffuseTexture;
             }
-            if (a.specular_tex) {
-                phong.specularMap = a.specular_tex;
+            if (a.speculatTexture) {
+                phong.specularMap = a.speculatTexture;
             }
-            if (a.ambient_tex) {
-                phong.ambientMap = a.ambient_tex;
+            if (a.ambientTexture) {
+                phong.ambientMap = a.ambientTexture;
             }
-            if (a.displacement_tex) {
-                phong.normalMap = a.displacement_tex;
+            if (a.displacementTexture) {
+                phong.normalMap = a.displacementTexture;
             }
         }
     }

@@ -351,7 +351,7 @@ namespace neo {
                 std::vector<float>& bitangents) {
 
                 int vertCount = verts.size() / 3;
-                if (!vertCount) {
+                if (!vertCount || !normals.size() || !texCoords.size()) {
                     return false;
                 }
 

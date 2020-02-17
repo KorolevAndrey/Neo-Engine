@@ -29,7 +29,7 @@ namespace neo {
             return it->second;
         }
 
-        Mesh* mesh = Loader::loadMesh(fileName, doResize);
+        Mesh* mesh = Loader::loadStitchedMesh(fileName, doResize);
         _insertMesh(fileName, mesh);
         return mesh;
     }
@@ -40,7 +40,7 @@ namespace neo {
 
     Mesh* Library::createEmptyMesh(const std::string& name) {
         auto it = mMeshes.find(name);
-        NEO_ASSERT(it == mMeshes.end(), "Mesh already found");
+        NEO_ASSERT(it == mMeshes.end(), "Mesh %s already found", name);
         Mesh* mesh = new Mesh;
         _insertMesh(name, mesh);
         return mesh;

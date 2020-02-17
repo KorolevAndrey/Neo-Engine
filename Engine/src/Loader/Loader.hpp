@@ -19,10 +19,10 @@ namespace neo {
     struct Asset {
         Mesh* mesh;
         Material material;
-        Texture* ambient_tex = nullptr;            // map_Ka
-        Texture* diffuse_tex = nullptr;            // map_Kd
-        Texture* specular_tex = nullptr;           // map_Ks
-        Texture* displacement_tex = nullptr;       // disp
+        Texture* ambientTexture = nullptr;            // map_Ka
+        Texture* diffuseTexture = nullptr;            // map_Kd
+        Texture* speculatTexture = nullptr;           // map_Ks
+        Texture* displacementTexture = nullptr;       // disp
         // Texture* alpha_tex = nullptr;              // map_d
         // Texture* bump_tex = nullptr;               // map_bump, bump
         // Texture* specular_highlight_tex; // map_Ns
@@ -35,7 +35,7 @@ namespace neo {
             static void init(const std::string &, bool);
 
             /* Load Mesh pointer from an .obj file */
-            static Mesh* loadMesh(const std::string &, bool = false);
+            static Mesh* loadStitchedMesh(const std::string &, bool = false);
             static std::vector<Asset> loadMultiAsset(const std::string &);
 
             /* Retrieve Texture pointer from an image file */

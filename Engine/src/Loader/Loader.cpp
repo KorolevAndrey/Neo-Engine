@@ -86,6 +86,7 @@ namespace neo {
 
         return mesh;
     }
+
    std::vector<Asset> Loader::loadMultiAsset(const std::string &fileName) {
         /* If mesh was not found in map, read it in */
         std::vector<tinyobj::shape_t> shapes;
@@ -103,85 +104,6 @@ namespace neo {
 
             asset.mesh = Library::createEmptyMesh(shape.name);
 
-            std::vector<float> tangents;
-            if (shape.mesh.indices.size()) {
-                std::vector<float> tan0, tan1;
-                tan0.resize(shape.mesh.positions.size());
-                for (int i = 0; i < tan0.size(); i++) {
-                    tan0[i] = 0.f;
-                }
-                tan1.resize(shape.mesh.positions.size());
-                for (int i = 0; i < tan1.size(); i++) {
-                    tan1[i] = 0.f;
-                }
-
-                for (int i = 0; i < shape.mesh.indices.size() / 3; i += 3) {
-                    int i0 = shape.mesh.indices[i];
-                    int i1 = shape.mesh.indices[i + 1];
-                    int i2 = shape.mesh.indices[i + 2];
-
-                    glm::vec3 v0 = glm::vec3(shape.mesh.positions[i0 + 0], shape.mesh.positions[i0 + 1], shape.mesh.positions[i0 + 2]);
-                    glm::vec3 v1 = glm::vec3(shape.mesh.positions[i1 + 0], shape.mesh.positions[i1 + 1], shape.mesh.positions[i1 + 2]);
-                    glm::vec3 v2 = glm::vec3(shape.mesh.positions[i2 + 0], shape.mesh.positions[i2 + 1], shape.mesh.positions[i2 + 2]);
-
-                    glm::vec2 t0 = glm::vec2(shape.mesh.texcoords[i0 + 0], shape.mesh.texcoords[i0 + 1]);
-                    glm::vec2 t1 = glm::vec2(shape.mesh.texcoords[i1 + 0], shape.mesh.texcoords[i1 + 1]);
-                    glm::vec2 t2 = glm::vec2(shape.mesh.texcoords[i2 + 0], shape.mesh.texcoords[i2 + 1]);
-
-                    float x1 = v1.x - v0.x;
-                    float x2 = v2.x - v0.x;
-                    float y1 = v1.y - v0.y;
-                    float y2 = v2.y - v0.y;
-                    float z1 = v1.z - v0.z;
-                    float z2 = v2.z - v0.z;
-
-                    float s1 = t1.x - t0.x;
-                    float s2 = t2.x - t0.x;
-                    float w1 = t1.y - t0.y;
-                    float w2 = t2.y - t0.y;
-
-                    float r = 1.f / (s1 * w2 - s2 * w1);
-                    glm::vec3 sdir = glm::normalize(glm::vec3(((w2 * x1 - w1 * x2) * r, (w2 * y1 - w1 * y2) * r,
-                        (w2 * z1 - w1 * z2) * r)));
-                    glm::vec3 wdir = glm::normalize(glm::vec3(((s1 * x2 - s2 * x1) * r, (s1 * y2 - s2 * y1) * r,
-                        (s1 * z2 - s2 * z1) * r)));
-
-                    tan0[i0 + 0] += sdir.x;
-                    tan0[i0 + 1] += sdir.y;
-                    tan0[i0 + 2] += sdir.z;
-                    tan0[i1 + 0] += sdir.x;
-                    tan0[i1 + 1] += sdir.y;
-                    tan0[i1 + 2] += sdir.z;
-                    tan0[i2 + 0] += sdir.x;
-                    tan0[i2 + 1] += sdir.y;
-                    tan0[i2 + 2] += sdir.z;
-
-                    tan1[i0 + 0] += wdir.x;
-                    tan1[i0 + 1] += wdir.y;
-                    tan1[i0 + 2] += wdir.z;
-                    tan1[i1 + 0] += wdir.x;
-                    tan1[i1 + 1] += wdir.y;
-                    tan1[i1 + 2] += wdir.z;
-                    tan1[i2 + 0] += wdir.x;
-                    tan1[i2 + 1] += wdir.y;
-                    tan1[i2 + 2] += wdir.z;
-                }
-
-                tangents.resize(shape.mesh.positions.size() / 3 * 4);
-                for (int i = 0; i < shape.mesh.indices.size() / 3; i += 3) {
-                    glm::vec3 normal = glm::vec3(shape.mesh.normals[i + 0], shape.mesh.normals[i + 1], shape.mesh.normals[i + 2]);
-                    glm::vec3 tan = glm::vec3(tan0[i + 0], tan0[i + 1], tan0[i + 2]);
-
-                    glm::vec3 t = glm::normalize((tan - normal * glm::dot(normal, tan)));
-                    float ta = glm::dot(glm::cross(normal, tan), glm::vec3(tan1[i + 0], tan1[i + 1], tan1[i + 2])) < 0.0F ? -1.0F : 1.0F;
-
-                    tangents[i + 0] = t.x;
-                    tangents[i + 1] = t.y;
-                    tangents[i + 2] = t.z;
-                    tangents[i + 3] = ta;
-                }
-            }
-
             /* Upload */
             asset.mesh->mPrimitiveType = GL_TRIANGLE_STRIP;
             if (shape.mesh.positions.size()) {
@@ -193,8 +115,10 @@ namespace neo {
             if (shape.mesh.texcoords.size()) {
                 asset.mesh->addVertexBuffer(VertexType::Texture0, 2, 2, shape.mesh.texcoords);
             }
-            if (tangents.size()) {
-                asset.mesh->addVertexBuffer(VertexType::Texture1, 3, 4, tangents);
+            std::vector<float> tangents, bitangents;
+            if (MeshGenerator::getTangentsAndBiTangent(shape.mesh.positions, shape.mesh.normals, shape.mesh.texcoords, shape.mesh.indices, tangents, bitangents)) {
+                asset.mesh->addVertexBuffer(VertexType::Tangent, 3, 3, tangents);
+                asset.mesh->addVertexBuffer(VertexType::BiTangent, 4, 3, bitangents);
             }
             if (shape.mesh.indices.size()) {
                 asset.mesh->mPrimitiveType = GL_TRIANGLES;

@@ -16,7 +16,9 @@ namespace neo {
         Texture2,
         Color0,
         Color1,
-        Color2
+        Color2,
+        Tangent,
+        BiTangent
     };
 
     struct VertexBuffer {

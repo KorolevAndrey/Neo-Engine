@@ -3,6 +3,8 @@
 
 #include "ext/PerlinNoise.hpp"
 
+#include <algorithm>
+
 namespace neo {
 
     class MeshGenerator {
@@ -339,6 +341,149 @@ namespace neo {
 
                 mesh->mPrimitiveType = GL_TRIANGLES;
             }
+
+            // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-13-normal-mapping/#computing-the-tangents-and-bitangents
+            static bool getTangentsAndBiTangent(const std::vector<float>& verts, 
+                const std::vector<float>& normals, 
+                const std::vector<float>& texCoords, 
+                const std::vector<unsigned>& indicies, 
+                std::vector<float>& tangents, 
+                std::vector<float>& bitangents) {
+
+                int vertCount = verts.size() / 3;
+                if (!vertCount) {
+                    return false;
+                }
+
+                if (!indicies.size()) {
+                    tangents.resize(vertCount * 3);
+                    bitangents.resize(vertCount * 3);
+                    for (int i = 0; i < vertCount; i += 3) {
+                        const float* v0 = &verts[3 * (i + 0)];
+                        const float* v1 = &verts[3 * (i + 1)];
+                        const float* v2 = &verts[3 * (i + 2)];
+
+                        const float* uv0 = &texCoords[2 * (i + 0)];
+                        const float* uv1 = &texCoords[2 * (i + 1)];
+                        const float* uv2 = &texCoords[2 * (i + 2)];
+
+                        const float* n0 = &normals[3 * (i + 0)];
+                        const float* n1 = &normals[3 * (i + 1)];
+                        const float* n2 = &normals[3 * (i + 2)];
+
+                        glm::vec3 tangent0, tangent1, tangent2, bitangent;
+                        _calculateTangentAndBitanget(v0, v1, v2, uv0, uv1, uv2, n0, n1, n2, tangent0, tangent1, tangent2, bitangent);
+
+                        float* t0 = &tangents[3 * (i + 0)];
+                        float* t1 = &tangents[3 * (i + 1)];
+                        float* t2 = &tangents[3 * (i + 2)];
+                        t0[0] = tangent0.x;
+                        t0[1] = tangent0.y;
+                        t0[2] = tangent0.z;
+                        t1[0] = tangent1.x;
+                        t1[1] = tangent1.y;
+                        t1[2] = tangent1.z;
+                        t2[0] = tangent2.x;
+                        t2[1] = tangent2.y;
+                        t2[2] = tangent2.z;
+
+                        float* b0 = &bitangents[3 * (i + 0)];
+                        float* b1 = &bitangents[3 * (i + 1)];
+                        float* b2 = &bitangents[3 * (i + 2)];
+                        b0[0] = b1[0] = b2[0] = bitangent.x;
+                        b0[1] = b1[1] = b2[1] = bitangent.x;
+                        b0[2] = b1[2] = b2[2] = bitangent.x;
+                    }
+                }
+                else {
+                    tangents.resize(vertCount * 3);
+                    bitangents.resize(vertCount * 3);
+                    std::fill(tangents.begin(), tangents.end(), 0.f);
+                    std::fill(bitangents.begin(), bitangents.end(), 0.f);
+
+                    for (int i = 0; i < indicies.size(); i += 3) {
+                        unsigned index0 = indicies[i + 0];
+                        unsigned index1 = indicies[i + 1];
+                        unsigned index2 = indicies[i + 2];
+
+                        const float* v0 = &verts[index0 * 3];
+                        const float* v1 = &verts[index1 * 3];
+                        const float* v2 = &verts[index2 * 3];
+
+                        const float* uv0 = &texCoords[index0 * 2];
+                        const float* uv1 = &texCoords[index1 * 2];
+                        const float* uv2 = &texCoords[index2 * 2];
+
+                        const float* n0 = &normals[index0 * 3];
+                        const float* n1 = &normals[index1 * 3];
+                        const float* n2 = &normals[index2 * 3];
+
+                        glm::vec3 tangent0, tangent1, tangent2, bitangent;
+                        _calculateTangentAndBitanget(v0, v1, v2, uv0, uv1, uv2, n0, n1, n2, tangent0, tangent1, tangent2, bitangent);
+
+                        float* t0 = &tangents[index0 * 3];
+                        float* t1 = &tangents[index1 * 3];
+                        float* t2 = &tangents[index2 * 3];
+                        t0[0] += tangent0.x;
+                        t0[1] += tangent0.y;
+                        t0[2] += tangent0.z;
+                        t1[0] += tangent1.x;
+                        t1[1] += tangent1.y;
+                        t1[2] += tangent1.z;
+                        t2[0] += tangent2.x;
+                        t2[1] += tangent2.y;
+                        t2[2] += tangent2.z;
+
+                        float* b0 = &bitangents[index0 * 3];
+                        float* b1 = &bitangents[index1 * 3];
+                        float* b2 = &bitangents[index2 * 3];
+                        b0[0] += bitangent.x;
+                        b0[1] += bitangent.y;
+                        b0[2] += bitangent.z;
+                        b1[0] += bitangent.x;
+                        b1[1] += bitangent.y;
+                        b1[2] += bitangent.z;
+                        b2[0] += bitangent.x;
+                        b2[1] += bitangent.y;
+                        b2[2] += bitangent.z;
+                    }
+                }
+
+                return tangents.size() && bitangents.size();
+            }
+
+            private:
+                static void _calculateTangentAndBitanget(const float* v0, const float *v1, const float* v2,
+                    const float* uv0, const float* uv1, const float* uv2, 
+                    const float* n0, const float* n1, const float* n2, 
+                    glm::vec3& tangent0, glm::vec3& tangent1, glm::vec3& tangent2, glm::vec3& bitangent) {
+
+                    glm::vec3 dPos1 = glm::vec3(v1[0], v1[1], v1[2]) - glm::vec3(v0[0], v0[1], v0[2]);
+                    glm::vec3 dPos2 = glm::vec3(v2[0], v2[1], v2[2]) - glm::vec3(v0[0], v0[1], v0[2]);
+                    glm::vec2 dUV1 = glm::vec2(uv1[0], uv1[1]) - glm::vec2(uv0[0], uv0[1]);
+                    glm::vec2 dUV2 = glm::vec2(uv2[0], uv2[1]) - glm::vec2(uv0[0], uv0[1]);
+
+                    float r = 1.f / (dUV1.x * dUV2.y - dUV1.y * dUV2.x);
+                    bitangent = (dPos2 * dUV1.x - dPos1 * dUV2.x) * r;
+                    glm::vec3 tangent = (dPos1 * dUV2.y - dPos2 * dUV1.y) * r;
+                    
+                    glm::vec3 normal0 = glm::vec3(n0[0], n0[1], n0[2]);
+                    glm::vec3 normal1 = glm::vec3(n1[0], n1[1], n1[2]);
+                    glm::vec3 normal2 = glm::vec3(n2[0], n2[1], n2[2]);
+
+                    tangent0 = glm::normalize(tangent - normal0 * glm::dot(normal0, tangent));
+                    if (glm::dot(glm::cross(normal0, tangent0), bitangent) < 0.f) {
+                        tangent0 *= -1.f;
+                    }
+                    tangent1 = glm::normalize(tangent - normal1 * glm::dot(normal1, tangent));
+                    if (glm::dot(glm::cross(normal1, tangent1), bitangent) < 0.f) {
+                        tangent1 *= -1.f;
+                    }
+                    tangent2 = glm::normalize(tangent - normal2 * glm::dot(normal2, tangent));
+                    if (glm::dot(glm::cross(normal2, tangent2), bitangent) < 0.f) {
+                        tangent2 *= -1.f;
+                    }
+                }
     };
 
 }

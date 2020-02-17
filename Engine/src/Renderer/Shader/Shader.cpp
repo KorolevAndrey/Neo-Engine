@@ -274,6 +274,8 @@ namespace neo {
             }
         }
         CHECK_GL(glDeleteProgram(mPID));
+        mAttributes.clear();
+        mUniforms.clear();
         mPID = 0;
     }
 

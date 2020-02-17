@@ -28,11 +28,11 @@ void main() {
     vec3 amb = diffuse * texture(ambientMap, fragTex).rgb;
     vec3 dif = texture(diffuseMap, fragTex).rgb;
     vec3 spec = specular * texture(specularMap, fragTex).rgb;
-    vec3 n = normalize(texture(normalMap, fragTex).rgb) * 2.0 - 1.0;
-    n = fragTBN * n;
+    vec3 n = normalize(texture(normalMap, fragTex).rgb);
+    // n = fragTBN * n;
     vec3 V = fragTBN * camPos - fragPos.xyz;
     vec3 L = fragTBN * lightPos - fragPos.xyz;
     vec3 phong = getPhong(n, V, L, lightAtt, lightCol, dif, spec, shine);
 
-    color = vec4(fragTan, 1.0);
+    color = vec4(n, 1.0);
 }

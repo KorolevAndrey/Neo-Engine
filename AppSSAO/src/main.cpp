@@ -6,6 +6,7 @@
 #include "AOShader.hpp"
 #include "CombineShader.hpp"
 #include "BlurShader.hpp"
+#include "GBufferComponent.hpp"
 
 #include "glm/gtc/matrix_transform.hpp"
 #include "Util/Util.hpp"
@@ -38,7 +39,7 @@ struct Renderable {
     GameObject *gameObject;
     SpatialComponent *spat;
 
-    Renderable(Mesh *mesh, glm::vec3 pos, glm::vec3 scale) {
+    Renderable(Mesh *mesh, glm::vec3 pos, glm::vec3 scale, Texture* texture = nullptr) {
         gameObject = &Engine::createGameObject();
         spat = &Engine::addComponent<SpatialComponent>(gameObject, pos, scale);
         Engine::addComponent<MeshComponent>(gameObject, *mesh);
@@ -78,6 +79,7 @@ int main() {
         material.mDiffuse = Util::genRandomVec3();
         Engine::addComponent<GBufferComponent>(stairs.gameObject, *Library::getTexture("black"), material);
     }
+
     Library::loadMesh("PineTree3.obj", true);
     Library::loadTexture("PineTexture.png");
     for (int i = 0; i < 20; i++) {
@@ -95,6 +97,9 @@ int main() {
     material.mAmbient = glm::vec3(0.7f);
     material.mDiffuse = glm::vec3(0.7f);
     Engine::addComponent<GBufferComponent>(terrain.gameObject, *Library::getTexture("black"), material);
+    material.ambient = glm::vec3(0.f);
+    material.diffuse = Util::genRandomVec3();
+    Engine::addComponent<MaterialComponent>(stairs.gameObject, material);
 
     /* Systems - order matters! */
     Engine::addSystem<CameraControllerSystem>();

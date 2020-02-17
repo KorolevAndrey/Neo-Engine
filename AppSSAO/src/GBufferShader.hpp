@@ -61,7 +61,5 @@ class GBufferShader : public Shader {
                 /* DRAW */
                 renderableIt->get<MeshComponent>()->mMesh.draw();
             }
-
-            unbind();
     }
 };

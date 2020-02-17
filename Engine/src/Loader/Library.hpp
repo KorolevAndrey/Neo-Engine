@@ -28,6 +28,7 @@ namespace neo {
             static Texture* getTexture(const std::string&);
             static Texture* loadTexture(const std::string&, TextureFormat = TextureFormat{});
             static Texture* loadCubemap(const std::string&, const std::vector<std::string> &);
+            static void deleteTexture(const std::string&);
 
 
             static Framebuffer* createFBO(const std::string&);

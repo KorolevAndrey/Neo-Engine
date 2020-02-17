@@ -78,6 +78,15 @@ namespace neo {
         return texture;
     }
 
+    void Library::deleteTexture(const std::string& name) {
+        auto it = mTextures.find(name);
+        if (it != mTextures.end()) {
+            it->second->destroy();
+            delete it->second;
+            mTextures.erase(it);
+        }
+    }
+
     Framebuffer* Library::createFBO(const std::string& name) {
         auto fb = new Framebuffer;
         mFramebuffers.emplace(name, fb);

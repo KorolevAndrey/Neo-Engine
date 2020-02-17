@@ -29,7 +29,7 @@ class AOShader : public PostProcessShader {
         }
 
         void generateKernel(unsigned size) {
-            std::vector<uint8_t> kernel;
+            std::vector<float> kernel;
             for (unsigned i = 0; i < size; i++) {
                 glm::vec3 sample(
                     Util::genRandom(-1.f, 1.f),
@@ -41,11 +41,12 @@ class AOShader : public PostProcessShader {
                 float scale = (float)i / (float)size;
                 scale = Util::lerp(0.1f, 1.f, scale * scale);
                 sample *= scale;
-                kernel.push_back(static_cast<uint8_t>(sample.x));
-                kernel.push_back(static_cast<uint8_t>(sample.y));
-                kernel.push_back(static_cast<uint8_t>(sample.z));
+                kernel.push_back(sample.x);
+                kernel.push_back(sample.y);
+                kernel.push_back(sample.z);
             };
             Library::getTexture("aoKernel")->update(glm::uvec2(size, 1), kernel.data());
+            kernelTex->update(glm::uvec2(size, 1), kernel.data());
         }
 
         void generateNoise(unsigned dim) {
@@ -57,6 +58,7 @@ class AOShader : public PostProcessShader {
                 noise[i + 2] = Util::genRandom();
             }
             Library::getTexture("aoNoise")->update(glm::uvec2(dim), noise.data());
+            noiseTex->update(glm::uvec2(dim), noise.data());
         }
 
         virtual void render() override {

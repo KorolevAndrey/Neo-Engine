@@ -60,6 +60,10 @@ class GBufferShader : public Shader {
 
                 /* DRAW */
                 renderableIt->get<MeshComponent>()->mMesh.draw();
+                /* Bind diffuse map or material */
+
+                /* DRAW */
+                model->mesh->draw();
             }
     }
 };

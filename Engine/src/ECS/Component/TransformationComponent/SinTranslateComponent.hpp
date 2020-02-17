@@ -18,8 +18,10 @@ namespace neo {
         SinTranslateComponent(GameObject *go, glm::vec3 offset, glm::vec3 base) :
             Component(go),
             mOffset(offset),
-            mBasePosition(base)
-        {}
+            mBasePosition(base),
+            mInitialRandom(Util::genRandom())
+        {
+        }
 
         virtual void imGuiEditor() override {
             ImGui::SliderFloat3("Offset", &mOffset[0], -10.f, 10.f);
@@ -28,5 +30,6 @@ namespace neo {
 
         glm::vec3 mOffset;
         glm::vec3 mBasePosition;
+        float mInitialRandom;
     };
 }

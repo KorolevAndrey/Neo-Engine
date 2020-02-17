@@ -23,7 +23,7 @@ namespace neo {
                 auto & msg(std::get<2>(message));
 
                 /* Send object-level messages */
-                if (gameObject) {
+                if (gameObject && gameObject->mReceivers.size()) {
                     auto objectReceivers(gameObject->mReceivers.find(msgTypeI));
                     if (objectReceivers != gameObject->mReceivers.end()) {
                         for (auto & receiver : objectReceivers->second) {

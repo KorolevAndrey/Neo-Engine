@@ -55,9 +55,11 @@ class LightPassShader : public Shader {
 
             /* Bind gbuffer */
             auto gbuffer = Library::getFBO("gbuffer");
-            loadTexture("gNormal",  *gbuffer->mTextures[0]);
-            loadTexture("gDiffuse", *gbuffer->mTextures[1]);
-            loadTexture("gDepth",   *gbuffer->mTextures[2]);
+            loadTexture("gDiffuse", *gbuffer->mTextures[0]);
+            loadTexture("gNormal",  *gbuffer->mTextures[1]);
+            loadTexture("gTan",     *gbuffer->mTextures[2]);
+            loadTexture("gBitan",   *gbuffer->mTextures[3]);
+            loadTexture("gDepth",   *gbuffer->mTextures[4]);
 
             /* Render light volumes */
             // TODO : instanced?

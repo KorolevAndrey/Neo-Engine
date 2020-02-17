@@ -63,6 +63,9 @@ int main() {
             if (a.diffuseTexture) {
                 renderable.diffuseMap = a.diffuseTexture;
             }
+            if (a.displacementTexture) {
+                renderable.normalMap = a.displacementTexture;
+            }
         }
     }
 

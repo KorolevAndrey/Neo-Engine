@@ -68,8 +68,8 @@ class AOShader : public PostProcessShader {
 
             // bind gbuffer
             auto gbuffer = Library::getFBO("gbuffer");
-            loadTexture("gNormal", *gbuffer->mTextures[0]);
-            loadTexture("gDepth",  *gbuffer->mTextures[2]);
+            loadTexture("gNormal", *gbuffer->mTextures[1]);
+            loadTexture("gDepth",  *gbuffer->mTextures[4]);
 
             // bind kernel and noise
             loadTexture("noise", *Library::getTexture("aoNoise"));

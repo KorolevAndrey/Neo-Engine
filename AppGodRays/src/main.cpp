@@ -75,7 +75,7 @@ int main() {
 
     /* Sponza object */
     {
-        auto asset = Loader::loadMultiAsset("bmw.obj");
+        auto asset = Loader::loadMultiAsset("sponza.obj");
 
         GameObject& parent = Engine::createGameObject();
         Engine::addComponent<SpatialComponent>(&parent, glm::vec3(0.f), glm::vec3(0.2f));

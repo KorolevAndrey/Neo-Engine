@@ -1,6 +1,8 @@
 
-uniform sampler2D gNormal;
 uniform sampler2D gDiffuse;
+uniform sampler2D gNormal;
+uniform sampler2D gTan;
+uniform sampler2D gBitan;
 uniform sampler2D gDepth;
 
 uniform mat4 invP, invV;

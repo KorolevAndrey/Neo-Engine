@@ -64,7 +64,7 @@ namespace neo {
 
             // Decide to remove unselected objects
             for (auto eSelected : Engine::getComponents<SelectedComponent>()) {
-                if ((&eSelected->getGameObject() != &selected->getGameObject()) && mRemoveDecider(eSelected)) {
+                if (!selected || (&eSelected->getGameObject() != &selected->getGameObject()) && mRemoveDecider(eSelected)) {
                     Engine::removeComponent<SelectedComponent>(*eSelected);
                 }
             }

@@ -7,25 +7,24 @@
 #include <string>
 #include <vector>
 
+#include "Renderer/GLObjects/Material.hpp"
 #include "Renderer/GLObjects/Texture2D.hpp"
 #include "Renderer/GLObjects/TextureCubeMap.hpp"
 
-// Remove?
-#include "Renderer/GLObjects/Mesh.hpp"
-#include "Renderer/GLObjects/Material.hpp"
-
 namespace neo {
+
+    class Mesh;
 
     struct Asset {
         Mesh* mesh;
         Material material;
-        Texture* ambientTexture = nullptr;            // map_Ka
-        Texture* diffuseTexture = nullptr;            // map_Kd
-        Texture* speculatTexture = nullptr;           // map_Ks
-        Texture* displacementTexture = nullptr;       // disp
-        // Texture* alpha_tex = nullptr;              // map_d
-        // Texture* bump_tex = nullptr;               // map_bump, bump
-        // Texture* specular_highlight_tex; // map_Ns
+        Texture* ambientTexture = nullptr;      // map_Ka
+        Texture* diffuseTexture = nullptr;      // map_Kd
+        Texture* speculatTexture = nullptr;     // map_Ks
+        Texture* displacementTexture = nullptr; // disp
+        // Texture* alphaTex = nullptr;        // map_d
+        // Texture* bumpTex = nullptr;         // map_bump, bump
+        // Texture* specularHighlightTex;     // map_Ns
     };
 
 
@@ -34,9 +33,10 @@ namespace neo {
         public:
             static void init(const std::string &, bool);
 
-            /* Load Mesh pointer from an .obj file */
+            // Stich .obj objects together into a single mesh
             static Mesh* loadStitchedMesh(const std::string &, bool = false);
-            static std::vector<Asset> loadMultiAsset(const std::string &);
+            // Return list of .obj assets
+            static const std::vector<Asset> loadMultiAsset(const std::string &);
 
             /* Retrieve Texture pointer from an image file */
             static Texture2D* loadTexture(const std::string &, TextureFormat);

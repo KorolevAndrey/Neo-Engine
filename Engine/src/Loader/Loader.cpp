@@ -86,24 +86,25 @@ namespace neo {
 
         return mesh;
     }
-
-   std::vector<Asset> Loader::loadMultiAsset(const std::string &fileName) {
+    
+    const std::vector<Asset> Loader::loadMultiAsset(const std::string &fileName) {
         std::vector<tinyobj::shape_t> shapes;
         std::vector<tinyobj::material_t> objMaterials;
 
         std::string errString;
-        // TODO : use assimp or another optimized asset loader
+        // TODO : update to latest tinyobjloader
         bool rc = tinyobj::LoadObj(shapes, objMaterials, errString, (RES_DIR + fileName).c_str(), RES_DIR.c_str());
         NEO_ASSERT(rc, errString.c_str());
 
         std::vector<Asset> ret;
 
-        int c = 0;
+        // This is hax because some .objs will have an object within a group that share the same name
+        // and tinyobjloader doesn't parse group/object names individually
+        int objectCount = 0;
         for (auto& shape : shapes) {
-            c++;
             Asset asset;
 
-            asset.mesh = Library::createEmptyMesh(fileName + "/" + shape.name + std::to_string(c));
+            asset.mesh = Library::createEmptyMesh(fileName + "/" + shape.name + std::to_string(objectCount++));
 
             /* Upload */
             asset.mesh->mPrimitiveType = GL_TRIANGLE_STRIP;

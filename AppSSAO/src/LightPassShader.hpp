@@ -29,6 +29,7 @@ class LightPassShader : public Shader {
         }
 
         virtual void render() override {
+            
             auto mainCamera = Engine::getComponentTuple<MainCameraComponent, CameraComponent, SpatialComponent>();
             if (!mainCamera) {
                 return;

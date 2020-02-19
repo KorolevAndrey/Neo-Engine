@@ -20,7 +20,7 @@ layout (location = 3) out vec4 gBitan;
 
 void main() {
     gDiffuse = vec4(useDiffuseMap ? texture(diffuseMap, fragTex).rgb : diffuseMaterial, 1.f);
-    gNormal  = vec4(0,1,0,1); //vec4(useNormalMap ? normalize(texture(normalMap, fragTex).rgb) : normalize(fragNor), 1.f);
-    gTan     = vec4(normalize(fragTan), 1.f);
-    gBitan   = vec4(normalize(fragBitan), 1.f);
+    gNormal  = vec4(useNormalMap ? normalize(texture(normalMap, fragTex).rgb) : normalize(fragNor * 0.5 + 0.5), 1.f);
+    gTan     = vec4(normalize(fragTan * 0.5 + 0.5), 1.f);
+    gBitan   = vec4(normalize(fragBitan * 0.5 + 0.5), 1.f);
 }  

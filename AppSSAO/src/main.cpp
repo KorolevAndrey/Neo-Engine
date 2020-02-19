@@ -34,6 +34,8 @@ struct Light {
         gameObject = &Engine::createGameObject();
         Engine::addComponent<SpatialComponent>(gameObject, pos, scale);
         light = &Engine::addComponent<LightComponent>(gameObject, col);
+        Engine::addComponent<SelectableComponent>(gameObject);
+        Engine::addComponent<BoundingBoxComponent>(gameObject, Library::getMesh("sphere"));
     }
 };
 
@@ -134,10 +136,10 @@ int main() {
                             Util::genRandom(minOffset.y, maxOffset.y),
                             Util::genRandom(minOffset.z, maxOffset.z)
                         );
-                        glm::vec3 color = Util::genRandomVec3();
+                        glm::vec3 color = glm::vec3(1.f);
                         float size = Util::genRandom(minScale, maxScale);
                         auto light = new Light(position, color, glm::vec3(size));
-                        Engine::addComponent<SinTranslateComponent>(light->gameObject, glm::vec3(0.f, Util::genRandom(minSinOffset, maxSinOffset), 0.f), position);
+                        // Engine::addComponent<SinTranslateComponent>(light->gameObject, glm::vec3(0.f, Util::genRandom(minSinOffset, maxSinOffset), 0.f), position);
                         lights.push_back(light);
                     }
                 }

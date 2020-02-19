@@ -102,34 +102,6 @@ int main() {
         }
     }
 
-    /*{
-        auto& asset = Loader::loadMultiAsset("bmw.obj");
-
-        GameObject& parent = Engine::createGameObject();
-        Engine::addComponent<SpatialComponent>(&parent, glm::vec3(0.f, 2.f, 0.f), glm::vec3(0.2f));
-
-        for (auto& a : asset) {
-            auto& phong = Engine::addComponent<renderable::PhongRenderable>(&parent);
-            auto& occluder = Engine::addComponent<SunOccluderComponent>(&parent);
-            phong.mesh = a.mesh;
-            occluder.mesh = a.mesh;
-            phong.material = a.material;
-            if (a.diffuseTexture) {
-                phong.diffuseMap = a.diffuseTexture;
-                occluder.alphaMap = a.diffuseTexture;
-            }
-            if (a.speculatTexture) {
-                phong.specularMap = a.speculatTexture;
-            }
-            if (a.ambientTexture) {
-                phong.ambientMap = a.ambientTexture;
-            }
-            if (a.displacementTexture) {
-                phong.normalMap = a.displacementTexture;
-            }
-        }
-    }*/
-
     /* Systems - order matters! */
     Engine::addSystem<CameraControllerSystem>();
 

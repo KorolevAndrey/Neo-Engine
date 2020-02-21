@@ -8,7 +8,7 @@
 
 namespace neo {
 
-    enum class VertexType {
+    enum VertexType : uint8_t {
         Position,
         Normal,
         Texture0,
@@ -18,7 +18,8 @@ namespace neo {
         Color1,
         Color2,
         Tangent,
-        BiTangent
+        BiTangent,
+        _count
     };
 
     struct VertexBuffer {

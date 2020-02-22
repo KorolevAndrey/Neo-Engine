@@ -29,7 +29,7 @@ class AOShader : public PostProcessShader {
         }
 
         void generateKernel(unsigned size) {
-            std::vector<float> kernel;
+            std::vector<uint8_t> kernel;
             for (unsigned i = 0; i < size; i++) {
                 glm::vec3 sample(
                     Util::genRandom(-1.f, 1.f),
@@ -41,9 +41,9 @@ class AOShader : public PostProcessShader {
                 float scale = (float)i / (float)size;
                 scale = Util::lerp(0.1f, 1.f, scale * scale);
                 sample *= scale;
-                kernel.push_back(sample.x);
-                kernel.push_back(sample.y);
-                kernel.push_back(sample.z);
+                kernel.push_back(static_cast<uint8_t>(sample.x));
+                kernel.push_back(static_cast<uint8_t>(sample.y));
+                kernel.push_back(static_cast<uint8_t>(sample.z));
             };
             Library::getTexture("aoKernel")->update(glm::uvec2(size, 1), kernel.data());
         }
@@ -66,8 +66,8 @@ class AOShader : public PostProcessShader {
 
             // bind gbuffer
             auto gbuffer = Library::getFBO("gbuffer");
-            loadTexture("gNormal", *gbuffer->mTextures[1]);
-            loadTexture("gDepth",  *gbuffer->mTextures[4]);
+            loadTexture("gNormal", *gbuffer->mTextures[0]);
+            loadTexture("gDepth",  *gbuffer->mTextures[2]);
 
             // bind kernel and noise
             loadTexture("noise", *Library::getTexture("aoNoise"));

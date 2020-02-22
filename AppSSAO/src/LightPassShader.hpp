@@ -29,7 +29,6 @@ class LightPassShader : public Shader {
         }
 
         virtual void render() override {
-            
             auto mainCamera = Engine::getComponentTuple<MainCameraComponent, CameraComponent, SpatialComponent>();
             if (!mainCamera) {
                 return;
@@ -56,11 +55,9 @@ class LightPassShader : public Shader {
 
             /* Bind gbuffer */
             auto gbuffer = Library::getFBO("gbuffer");
-            loadTexture("gDiffuse", *gbuffer->mTextures[0]);
-            loadTexture("gNormal",  *gbuffer->mTextures[1]);
-            loadTexture("gTan",     *gbuffer->mTextures[2]);
-            loadTexture("gBitan",   *gbuffer->mTextures[3]);
-            loadTexture("gDepth",   *gbuffer->mTextures[4]);
+            loadTexture("gNormal",  *gbuffer->mTextures[0]);
+            loadTexture("gDiffuse", *gbuffer->mTextures[1]);
+            loadTexture("gDepth",   *gbuffer->mTextures[2]);
 
             /* Render light volumes */
             // TODO : instanced?

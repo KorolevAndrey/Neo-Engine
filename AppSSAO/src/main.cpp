@@ -6,9 +6,6 @@
 #include "AOShader.hpp"
 #include "CombineShader.hpp"
 #include "BlurShader.hpp"
-#include "GBufferComponent.hpp"
-
-#include "Loader/Loader.hpp"
 
 #include "glm/gtc/matrix_transform.hpp"
 #include "Util/Util.hpp"
@@ -34,8 +31,17 @@ struct Light {
         gameObject = &Engine::createGameObject();
         Engine::addComponent<SpatialComponent>(gameObject, pos, scale);
         light = &Engine::addComponent<LightComponent>(gameObject, col);
-        Engine::addComponent<SelectableComponent>(gameObject);
-        Engine::addComponent<BoundingBoxComponent>(gameObject, *Library::getMesh("sphere"));
+    }
+};
+
+struct Renderable {
+    GameObject *gameObject;
+    SpatialComponent *spat;
+
+    Renderable(Mesh *mesh, glm::vec3 pos, glm::vec3 scale) {
+        gameObject = &Engine::createGameObject();
+        spat = &Engine::addComponent<SpatialComponent>(gameObject, pos, scale);
+        Engine::addComponent<MeshComponent>(gameObject, *mesh);
     }
 };
 
@@ -51,20 +57,44 @@ int main() {
 
     std::vector<Light *> lights;
     lights.push_back(new Light(glm::vec3(25.f, 25.f, 0.f), glm::vec3(1.f), glm::vec3(100.f)));
-    /* Sponza object */
     {
-        auto asset = Loader::loadMultiAsset("sponza.obj");
-
-        GameObject& parent = Engine::createGameObject();
-        Engine::addComponent<SpatialComponent>(&parent, glm::vec3(0.f), glm::vec3(0.2f));
-
-        for (auto& a : asset) {
-            Engine::addComponent<MeshComponent>(&parent, *a.mesh);
-            if (a.diffuseTexture && a.displacementTexture) {
-                auto& renderable = Engine::addComponent<GBufferComponent>(&parent, *a.diffuseTexture, *a.displacementTexture, a.material);
-            }
-        }
+        Renderable cube(Library::getMesh("cube"), glm::vec3(10.f, 0.75f, 0.f), glm::vec3(5.f));
+        Material material;
+        material.mAmbient = glm::vec3(0.2f);
+        material.mDiffuse = Util::genRandomVec3();
+        Engine::addComponent<GBufferComponent>(cube.gameObject, *Library::getTexture("black"), material);
     }
+    {
+        Renderable dragon(Library::loadMesh("dragon10k.obj", true), glm::vec3(-4.f, 5.f, -5.f), glm::vec3(10.f));
+        Material material;
+        material.mAmbient = glm::vec3(0.2f);
+        material.mDiffuse = Util::genRandomVec3();
+        Engine::addComponent<GBufferComponent>(dragon.gameObject, *Library::getTexture("black"), material);
+    }
+    {
+        Renderable stairs(Library::loadMesh("staircase.obj", true), glm::vec3(5.f, 5.f, 9.f), glm::vec3(10.f));
+        Material material;
+        material.mAmbient = glm::vec3(0.2f);
+        material.mDiffuse = Util::genRandomVec3();
+        Engine::addComponent<GBufferComponent>(stairs.gameObject, *Library::getTexture("black"), material);
+    }
+    Library::loadMesh("PineTree3.obj", true);
+    Library::loadTexture("PineTexture.png");
+    for (int i = 0; i < 20; i++) {
+        Renderable tree(Library::getMesh("PineTree3.obj"), glm::vec3(50.f - i * 5.f, 5.f, 25.f + 25.f * Util::genRandom()), glm::vec3(10.f));
+        Material material;
+        material.mAmbient = glm::vec3(0.2f);
+        material.mDiffuse = glm::vec3(0.f);
+        Engine::addComponent<GBufferComponent>(tree.gameObject, *Library::getTexture("PineTexture.png"), material);
+    }
+
+    // Terrain 
+    Renderable terrain(Library::getMesh("quad"), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1000.f));
+    terrain.spat->rotate(glm::mat3(glm::rotate(glm::mat4(1.f), -1.56f, glm::vec3(1, 0, 0))));
+    Material material;
+    material.mAmbient = glm::vec3(0.7f);
+    material.mDiffuse = glm::vec3(0.7f);
+    Engine::addComponent<GBufferComponent>(terrain.gameObject, *Library::getTexture("black"), material);
 
     /* Systems - order matters! */
     Engine::addSystem<CameraControllerSystem>();
@@ -131,10 +161,10 @@ int main() {
                             Util::genRandom(minOffset.y, maxOffset.y),
                             Util::genRandom(minOffset.z, maxOffset.z)
                         );
-                        glm::vec3 color = glm::vec3(1.f);
+                        glm::vec3 color = Util::genRandomVec3();
                         float size = Util::genRandom(minScale, maxScale);
                         auto light = new Light(position, color, glm::vec3(size));
-                        // Engine::addComponent<SinTranslateComponent>(light->gameObject, glm::vec3(0.f, Util::genRandom(minSinOffset, maxSinOffset), 0.f), position);
+                        Engine::addComponent<SinTranslateComponent>(light->gameObject, glm::vec3(0.f, Util::genRandom(minSinOffset, maxSinOffset), 0.f), position);
                         lights.push_back(light);
                     }
                 }

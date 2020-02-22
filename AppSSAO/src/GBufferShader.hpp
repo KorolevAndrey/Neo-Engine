@@ -21,10 +21,8 @@ class GBufferShader : public Shader {
             auto gbuffer = Library::createFBO("gbuffer");
 
             TextureFormat format{ GL_RGB, GL_RGB, GL_NEAREST, GL_CLAMP_TO_EDGE };
-            gbuffer->attachColorTexture(Window::getFrameSize(), format); // diffuse
             gbuffer->attachColorTexture(Window::getFrameSize(), format); // normal
-            gbuffer->attachColorTexture(Window::getFrameSize(), format); // tan
-            gbuffer->attachColorTexture(Window::getFrameSize(), format); // bitan
+            gbuffer->attachColorTexture(Window::getFrameSize(), format); // color
             gbuffer->attachDepthTexture(Window::getFrameSize(), GL_NEAREST, GL_CLAMP_TO_EDGE);  // depth
             gbuffer->initDrawBuffers();
 
@@ -59,10 +57,11 @@ class GBufferShader : public Shader {
                 loadUniform("ambientColor", renderable->mMaterial.mAmbient);
                 loadUniform("diffuseColor", renderable->mMaterial.mDiffuse);
                 loadTexture("diffuseMap", renderable->mDiffuseMap);
-                loadTexture("normalMap", renderable->mNormalMap);
 
                 /* DRAW */
                 renderableIt->get<MeshComponent>()->mMesh.draw();
             }
+
+            unbind();
     }
 };

@@ -24,7 +24,7 @@ class CombineShader : public PostProcessShader {
             loadUniform("diffuseAmount", diffuseAmount);
 
             // Bind diffuse output
-            loadTexture("gDiffuse", *Library::getFBO("gbuffer")->mTextures[0]);
+            loadTexture("gDiffuse", *Library::getFBO("gbuffer")->mTextures[1]);
 
             // Bind light pass output
             loadTexture("lightOutput", *Library::getFBO("lightpass")->mTextures[0]);

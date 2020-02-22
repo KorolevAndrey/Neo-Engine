@@ -1,8 +1,6 @@
 
-uniform sampler2D gDiffuse;
 uniform sampler2D gNormal;
-uniform sampler2D gTan;
-uniform sampler2D gBitan;
+uniform sampler2D gDiffuse;
 uniform sampler2D gDepth;
 
 uniform mat4 invP, invV;
@@ -71,21 +69,17 @@ void main() {
     }
 
     /* Retrieve remaining data from gbuffer */
+    vec3 fragNor = texture(gNormal, fragTex).rgb * 2.f - vec3(1.f);
     vec3 albedo = texture(gDiffuse, fragTex).rgb;
-    vec3 fragNor = normalize(texture(gNormal, fragTex).rgb * 2.0 - 1.0);
-    vec3 fragTan = normalize(texture(gTan, fragTex).rgb * 2.0 - 1.0);
-    vec3 fragBitan = normalize(texture(gBitan, fragTex).rgb * 2.0 - 1.0);
-    mat3 TBN = transpose(mat3(fragTan, fragBitan, fragNor));
-
-    vec3 N = normalize(TBN * normalize(fragNor));
-    vec3 V = normalize((camPos - fragPos.xyz));
+ 
     vec3 L = normalize(lightDir);
+    vec3 V = normalize(camPos - fragPos);
+    vec3 N = normalize(fragNor);
     vec3 H = normalize(L + V);
-    float lambert = clamp(dot(L, N), 0.0, 1.0);
-    vec3 diffuseContrib  = lightCol * lambert;
-    vec3 specularContrib = lightCol * pow(clamp(dot(H, N), 0.0, 1.0), 33.f);
-    vec3 phong = albedo * diffuseContrib
-                 + specularContrib;
-
-    color = vec4(phong * attFactor, 1.0);
+    float lambert = clamp(dot(L, N), 0.f, 1.f);
+    vec3 diffuseContrib = lightCol * lambert * attFactor;
+    float s = pow(clamp(dot(H, N), 0.f, 1.f), 33.f);
+    vec3 specularContrib = lightCol * s * attFactor * 0.33f;
+    color.a = 1.f;
+    color.rgb = diffuseContrib * albedo + specularContrib;
 }

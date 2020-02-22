@@ -1,7 +1,6 @@
 #include <Engine.hpp>
+#include "Loader/Loader.hpp"
 
-#include "Renderer/Shader/PhongShader.hpp"
-#include "Renderer/Shader/AlphaTestShader.hpp"
 #include "Renderer/Shader/GammaCorrectShader.hpp"
 
 #include "SunComponent.hpp"
@@ -10,6 +9,9 @@
 #include "GodRayOccluderShader.hpp"
 #include "BlurShader.hpp"
 #include "CombineShader.hpp"
+
+#include "MyPhongRenderable.hpp"
+#include "MyPhongShader.hpp"
 
 #include "glm/gtc/matrix_transform.hpp"
 
@@ -51,16 +53,6 @@ struct Light {
     }
 };
 
-struct Renderable {
-    GameObject *gameObject;
-
-    Renderable(Mesh *mesh, glm::vec3 position = glm::vec3(0.f), glm::vec3 scale = glm::vec3(1.f), glm::vec3 rotation = glm::vec3(0.f)) {
-        gameObject = &Engine::createGameObject();
-        Engine::addComponent<MeshComponent>(gameObject, *mesh);
-        Engine::addComponent<SpatialComponent>(gameObject, position, scale, rotation);
-    }
-};
-
 int main() {
     EngineConfig config;
     config.APP_NAME = "GodRays";
@@ -68,7 +60,7 @@ int main() {
     Engine::init(config);
 
     /* Game objects */
-    Camera camera(45.f, 1.f, 100.f, glm::vec3(0, 0.6f, 5), 0.4f, 7.f);
+    Camera camera(45.f, 1.f, 500.f, glm::vec3(0, 0.6f, 5), 0.4f, 7.f);
     Engine::addComponent<MainCameraComponent>(&camera.camera->getGameObject());
 
     Light(glm::vec3(0.f, 2.f, -20.f), 12.f, glm::vec3(1.f), glm::vec3(0.6, 0.2, 0.f));
@@ -77,27 +69,14 @@ int main() {
     {
         auto asset = Loader::loadMultiAsset("sponza.obj");
 
-        GameObject& parent = Engine::createGameObject();
-        Engine::addComponent<SpatialComponent>(&parent, glm::vec3(0.f), glm::vec3(0.2f));
-
+        // TODO - these should have some parent/child thing going on..
         for (auto& a : asset) {
-            auto& phong = Engine::addComponent<renderable::PhongRenderable>(&parent);
-            auto& occluder = Engine::addComponent<SunOccluderComponent>(&parent);
-            phong.mesh = a.mesh;
-            occluder.mesh = a.mesh;
-            phong.material = a.material;
-            if (a.diffuseTexture) {
-                phong.diffuseMap = a.diffuseTexture;
-                occluder.alphaMap = a.diffuseTexture;
-            }
-            if (a.speculatTexture) {
-                phong.specularMap = a.speculatTexture;
-            }
-            if (a.ambientTexture) {
-                phong.ambientMap = a.ambientTexture;
-            }
-            if (a.displacementTexture) {
-                phong.normalMap = a.displacementTexture;
+            if (a.diffuseTexture && a.ambientTexture && a.displacementTexture) {
+                GameObject& go = Engine::createGameObject();
+                Engine::addComponent<SpatialComponent>(&go, glm::vec3(0.f), glm::vec3(0.2f));
+                Engine::addComponent<MeshComponent>(&go, *a.mesh);
+                Engine::addComponent<MyPhongRenderable>(&go, *a.ambientTexture, *a.diffuseTexture, *a.displacementTexture, *a.specularTexture, a.material);
+                Engine::addComponent<SunOccluderComponent>(&go, *a.diffuseTexture);
             }
         }
     }
@@ -110,8 +89,7 @@ int main() {
     Renderer::addPreProcessShader<GodRaySunShader>("billboard.vert", "godraysun.frag");
     Renderer::addPreProcessShader<GodRayOccluderShader>("model.vert", "godrayoccluder.frag");
     Renderer::addPreProcessShader<BlurShader>("blur.vert", "blur.frag");
-    Renderer::addSceneShader<PhongShader>();
-    Renderer::addSceneShader<AlphaTestShader>();
+    Renderer::addSceneShader<MyPhongShader>("myphong.vert", "myphong.frag");
     Renderer::addPostProcessShader<CombineShader>("combine.frag");
     Renderer::addPostProcessShader<GammaCorrectShader>();
 

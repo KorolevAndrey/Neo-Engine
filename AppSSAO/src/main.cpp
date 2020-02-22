@@ -35,7 +35,7 @@ struct Light {
         Engine::addComponent<SpatialComponent>(gameObject, pos, scale);
         light = &Engine::addComponent<LightComponent>(gameObject, col);
         Engine::addComponent<SelectableComponent>(gameObject);
-        Engine::addComponent<BoundingBoxComponent>(gameObject, Library::getMesh("sphere"));
+        Engine::addComponent<BoundingBoxComponent>(gameObject, *Library::getMesh("sphere"));
     }
 };
 
@@ -59,14 +59,9 @@ int main() {
         Engine::addComponent<SpatialComponent>(&parent, glm::vec3(0.f), glm::vec3(0.2f));
 
         for (auto& a : asset) {
-            auto& renderable = Engine::addComponent<GBufferComponent>(&parent);
-            renderable.mesh = a.mesh;
-            renderable.material = a.material;
-            if (a.diffuseTexture) {
-                renderable.diffuseMap = a.diffuseTexture;
-            }
-            if (a.displacementTexture) {
-                renderable.normalMap = a.displacementTexture;
+            Engine::addComponent<MeshComponent>(&parent, *a.mesh);
+            if (a.diffuseTexture && a.displacementTexture) {
+                auto& renderable = Engine::addComponent<GBufferComponent>(&parent, *a.diffuseTexture, *a.displacementTexture, a.material);
             }
         }
     }

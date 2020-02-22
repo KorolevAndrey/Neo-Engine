@@ -126,6 +126,8 @@
     <ClInclude Include="src\CombineShader.hpp" />
     <ClInclude Include="src\GodRayOccluderShader.hpp" />
     <ClInclude Include="src\GodRaySunShader.hpp" />
+    <ClInclude Include="src\MyPhongRenderable.hpp" />
+    <ClInclude Include="src\MyPhongShader.hpp" />
     <ClInclude Include="src\SunComponent.hpp" />
     <ClInclude Include="src\SunOccluderComponent.hpp" />
   </ItemGroup>

@@ -5,10 +5,7 @@
 #include "Renderer/GLObjects/Material.hpp"
 
 namespace neo {
-    class Mesh;
-
-namespace neo {
-    struct Material;
+    class Material;
     class Mesh;
     class Texture;
 
@@ -18,8 +15,8 @@ namespace neo {
 
         public:
             // These will be replaced by renderer handles eventually
-            Material mMaterial;
             const Texture& mDiffuseMap;
+            Material mMaterial;
 
             PhongRenderable(GameObject *go, const Texture& diffuseMap, Material material = Material{}) :
                 Component(go),

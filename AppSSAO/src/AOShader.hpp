@@ -46,7 +46,6 @@ class AOShader : public PostProcessShader {
                 kernel.push_back(sample.z);
             };
             Library::getTexture("aoKernel")->update(glm::uvec2(size, 1), kernel.data());
-            kernelTex->update(glm::uvec2(size, 1), kernel.data());
         }
 
         void generateNoise(unsigned dim) {
@@ -58,7 +57,6 @@ class AOShader : public PostProcessShader {
                 noise[i + 2] = Util::genRandom();
             }
             Library::getTexture("aoNoise")->update(glm::uvec2(dim), noise.data());
-            noiseTex->update(glm::uvec2(dim), noise.data());
         }
 
         virtual void render() override {

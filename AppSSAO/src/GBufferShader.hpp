@@ -59,22 +59,10 @@ class GBufferShader : public Shader {
                 loadUniform("ambientColor", renderable->mMaterial.mAmbient);
                 loadUniform("diffuseColor", renderable->mMaterial.mDiffuse);
                 loadTexture("diffuseMap", renderable->mDiffuseMap);
+                loadTexture("normalMap", renderable->mNormalMap);
 
                 /* DRAW */
                 renderableIt->get<MeshComponent>()->mMesh.draw();
-                /* Bind diffuse map or material */
-
-                if (auto normalMap = model->normalMap) {
-                    loadTexture("normalMap", *normalMap);
-                    loadUniform("useNormalMap", true);
-                }
-                else {
-                    loadUniform("useNormalMap", false);
-                }
-
-
-                /* DRAW */
-                model->mesh->draw();
             }
     }
 };

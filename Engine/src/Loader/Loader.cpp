@@ -1,6 +1,6 @@
 #include "Loader.hpp"
-
 #include "Library.hpp"
+#include "MeshGenerator.hpp"
 
 #include "Renderer/GLObjects/Mesh.hpp"
 #include "Renderer/GLObjects/Texture.hpp"
@@ -147,14 +147,17 @@ namespace neo {
                     format.mSizedFormat = GL_RGB8;
                     format.mBaseFormat = GL_RGB;
 
-                    if (material.ambient_texname.size()) {
-                        asset.ambientTexture = Library::loadTexture(material.ambient_texname, format);
-                    }
                     if (material.diffuse_texname.size()) {
                         asset.diffuseTexture = Library::loadTexture(material.diffuse_texname, format);
                     }
+                    if (material.ambient_texname.size()) {
+                        asset.ambientTexture = Library::loadTexture(material.ambient_texname, format);
+                    }
+                    else {
+                        asset.ambientTexture = asset.diffuseTexture;
+                    }
                     if (material.specular_texname.size()) {
-                        asset.speculatTexture = Library::loadTexture(material.specular_texname, format);
+                        asset.specularTexture = Library::loadTexture(material.specular_texname, format);
                     }
                     if (material.displacement_texname.size()) {
                         asset.displacementTexture = Library::loadTexture(material.displacement_texname, format);

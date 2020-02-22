@@ -20,7 +20,7 @@ namespace neo {
         Material material;
         Texture* ambientTexture = nullptr;      // map_Ka
         Texture* diffuseTexture = nullptr;      // map_Kd
-        Texture* speculatTexture = nullptr;     // map_Ks
+        Texture* specularTexture = nullptr;     // map_Ks
         Texture* displacementTexture = nullptr; // disp
         // Texture* alphaTex = nullptr;        // map_d
         // Texture* bumpTex = nullptr;         // map_bump, bump

@@ -35,34 +35,34 @@ public:
 
         const auto& cameraFrustum = camera->mGameObject.getComponentByType<FrustumComponent>();
 
-        for (auto& renderable : Engine::getComponents<renderable::PhongRenderable>()) {
-            if (auto renderableSpatial = renderable->getGameObject().getComponentByType<SpatialComponent>()) {
+        for (auto& renderableIt : Engine::getComponentTuples<MyPhongRenderable, MeshComponent, SpatialComponent>()) {
+            auto spatial = renderableIt->get<SpatialComponent>();
 
-                // VFC
-                if (cameraFrustum) {
-                    MICROPROFILE_SCOPEI("PhongShader", "VFC", MP_AUTO);
-                    if (const auto& boundingBox = renderable->getGameObject().getComponentByType<BoundingBoxComponent>()) {
-                        float radius = glm::max(glm::max(renderableSpatial->getScale().x, renderableSpatial->getScale().y), renderableSpatial->getScale().z) * boundingBox->getRadius();
-                        if (!cameraFrustum->isInFrustum(renderableSpatial->getPosition(), radius)) {
-                            continue;
-                        }
+            // VFC
+            if (cameraFrustum) {
+                MICROPROFILE_SCOPEI("PhongShader", "VFC", MP_AUTO);
+                if (const auto& boundingBox = renderableIt->mGameObject.getComponentByType<BoundingBoxComponent>()) {
+                    float radius = glm::max(glm::max(spatial->getScale().x, spatial->getScale().y), spatial->getScale().z) * boundingBox->getRadius();
+                    if (!cameraFrustum->isInFrustum(spatial->getPosition(), radius)) {
+                        continue;
                     }
                 }
-
-                loadUniform("M", renderableSpatial->getModelMatrix());
-                loadUniform("N", renderableSpatial->getNormalMatrix());
-
-                loadUniform("ambient", renderable->material.ambient);
-                loadUniform("diffuse", renderable->material.diffuse);
-                loadUniform("specular", renderable->material.specular);
-                loadUniform("shine", renderable->material.shininess);
-                loadTexture("ambientMap", *renderable->ambientMap);
-                loadTexture("diffuseMap", *renderable->diffuseMap);
-                loadTexture("specularMap", *renderable->specularMap);
-                loadTexture("normalMap", *renderable->normalMap);
-
-                renderable->mesh->draw();
             }
+
+            loadUniform("M", spatial->getModelMatrix());
+            loadUniform("N", spatial->getNormalMatrix());
+
+            auto renderable = renderableIt->get<MyPhongRenderable>();
+            loadUniform("ambient", renderable->mMaterial.mAmbient);
+            loadUniform("diffuse", renderable->mMaterial.mDiffuse);
+            loadUniform("specular", renderable->mMaterial.mSpecular);
+            loadUniform("shine", renderable->mMaterial.mShininess);
+            loadTexture("ambientMap", renderable->mAmbientMap);
+            loadTexture("diffuseMap", renderable->mDiffuseMap);
+            loadTexture("specularMap", renderable->mSpecularMap);
+            loadTexture("normalMap", renderable->mNormalMap);
+
+            renderableIt->get<MeshComponent>()->mMesh.draw();
         }
     }
 

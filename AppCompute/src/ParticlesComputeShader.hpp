@@ -26,21 +26,22 @@ public:
         bind();
 
         if (auto mesh = Engine::getSingleComponent<ParticleMeshComponent>()) {
-            auto position = mesh->mMesh->getVBO(VertexType::Position);
+            if (auto position = mesh->mMesh->getVBO(VertexType::Position)) {
 
-            loadUniform("timestep", Util::mTimeStep / 1000.f * timeScale);
+                loadUniform("timestep", Util::mTimeStep / 1000.f * timeScale);
 
-            // Bind mesh
-            CHECK_GL(glBindVertexArray(mesh->mMesh->mVAOID));
-            CHECK_GL(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, position.attribArray, position.vboID));
+                // Bind mesh
+                CHECK_GL(glBindVertexArray(mesh->mMesh->mVAOID));
+                CHECK_GL(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, position->attribArray, position->vboID));
 
-            // Dispatch 
-            CHECK_GL(glDispatchCompute(mesh->mNumParticles / Renderer::NEO_MAX_COMPUTE_GROUP_SIZE.x, 1, 1));
-            CHECK_GL(glMemoryBarrier( GL_SHADER_STORAGE_BARRIER_BIT ));
+                // Dispatch 
+                CHECK_GL(glDispatchCompute(mesh->mNumParticles / Renderer::NEO_MAX_COMPUTE_GROUP_SIZE.x, 1, 1));
+                CHECK_GL(glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT));
 
 
-            // Reset bind
-            CHECK_GL(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, position.attribArray, 0));
+                // Reset bind
+                CHECK_GL(glBindBufferBase(GL_SHADER_STORAGE_BUFFER, position->attribArray, 0));
+            }
         }
 
         unbind();

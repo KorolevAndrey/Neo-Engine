@@ -387,7 +387,6 @@ namespace neo {
                     }
                 };
 
-
                 if (!indices.size()) {
                     tangents.resize(vertCount * 3);
                     bitangents.resize(vertCount * 3);

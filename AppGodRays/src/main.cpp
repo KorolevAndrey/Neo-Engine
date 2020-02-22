@@ -75,7 +75,7 @@ int main() {
                 GameObject& go = Engine::createGameObject();
                 Engine::addComponent<SpatialComponent>(&go, glm::vec3(0.f), glm::vec3(0.2f));
                 Engine::addComponent<MeshComponent>(&go, *a.mesh);
-                Engine::addComponent<MyPhongRenderable>(&go, *a.ambientTexture, *a.diffuseTexture, *a.displacementTexture, *a.specularTexture, a.material);
+                Engine::addComponent<MyPhongRenderable>(&go, *a.alphaTex, *a.ambientTexture, *a.diffuseTexture, *a.displacementTexture, *a.specularTexture, a.material);
                 Engine::addComponent<SunOccluderComponent>(&go, *a.diffuseTexture);
             }
         }

@@ -22,6 +22,7 @@ namespace neo {
 
     Asset::Asset(Mesh* mesh) :
         mesh(mesh) {
+        alphaTex = Library::getTexture("white");
         ambientTexture = Library::getTexture("black");
         diffuseTexture = Library::getTexture("black");
         specularTexture = Library::getTexture("black");
@@ -159,6 +160,9 @@ namespace neo {
                     }
                     if (material.ambient_texname.size()) {
                         asset.ambientTexture = Library::loadTexture(material.ambient_texname, format);
+                    }
+                    if (material.alpha_texname.size()) {
+                        asset.alphaTex = Library::loadTexture(material.alpha_texname, format);
                     }
                     if (material.specular_texname.size()) {
                         asset.specularTexture = Library::loadTexture(material.specular_texname, format);

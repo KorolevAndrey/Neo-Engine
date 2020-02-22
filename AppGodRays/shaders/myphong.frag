@@ -17,6 +17,7 @@ uniform vec3 ambient;
 uniform vec3 diffuse;
 uniform vec3 specular;
 uniform float shine;
+uniform sampler2D alphaMap;
 uniform sampler2D ambientMap;
 uniform sampler2D diffuseMap;
 uniform sampler2D specularMap;
@@ -25,13 +26,16 @@ uniform sampler2D normalMap;
 out vec4 color;
 
 void main() {
+    float alpha = texture(alphaMap, fragTex).r;
+    alphaDiscard(alpha);
+
     vec3 amb = ambient * texture(ambientMap, fragTex).rgb;
     vec3 dif = diffuse * texture(diffuseMap, fragTex).rgb;
     vec3 spec = specular + texture(specularMap, fragTex).rgb;
-    vec3 V = TBN * (camPos - fragPos.xyz);
-    vec3 L = TBN * (lightPos - fragPos.xyz);
-    vec3 n = normalize(texture(normalMap, fragTex).rgb * 2.0 - 1.0);
+    vec3 V = (camPos - fragPos.xyz);
+    vec3 L = (lightPos - fragPos.xyz);
+    vec3 n = normalize(fragNor);
     vec3 phong = getPhong(n, V, L, lightAtt, lightCol, dif, spec, shine);
 
-    color = vec4(phong, 1.0);
+    color = vec4(phong, alpha);
 }

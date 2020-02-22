@@ -1,4 +1,3 @@
-// Acts as both library and loader 
 #pragma once
 
 #define GLEW_STATIC
@@ -22,7 +21,7 @@ namespace neo {
         Texture* diffuseTexture = nullptr;      // map_Kd
         Texture* specularTexture = nullptr;     // map_Ks
         Texture* displacementTexture = nullptr; // disp
-        // Texture* alphaTex = nullptr;        // map_d
+        Texture* alphaTex = nullptr;        // map_d
         // Texture* bumpTex = nullptr;         // map_bump, bump
         // Texture* specularHighlightTex;     // map_Ns
 

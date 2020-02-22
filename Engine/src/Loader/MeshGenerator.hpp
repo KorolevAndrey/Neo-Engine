@@ -343,11 +343,11 @@ namespace neo {
             }
 
             // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-13-normal-mapping/#computing-the-tangents-and-bitangents
-            static bool getTangentsAndBiTangent(const std::vector<float>& verts, 
-                const std::vector<float>& normals, 
-                const std::vector<float>& texCoords, 
-                const std::vector<unsigned>& indicies, 
-                std::vector<float>& tangents, 
+            static bool getTangentsAndBiTangent(const std::vector<float>& verts,
+                const std::vector<float>& normals,
+                const std::vector<float>& texCoords,
+                const std::vector<unsigned>& indices,
+                std::vector<float>& tangents,
                 std::vector<float>& bitangents) {
 
                 int vertCount = verts.size() / 3;
@@ -355,7 +355,40 @@ namespace neo {
                     return false;
                 }
 
-                if (!indicies.size()) {
+                auto _calculateTangentAndBitanget = [](const float* v0, const float *v1, const float* v2,
+                    const float* uv0, const float* uv1, const float* uv2,
+                    const float* n0, const float* n1, const float* n2,
+                    glm::vec3& tangent0, glm::vec3& tangent1, glm::vec3& tangent2, glm::vec3& bitangent) {
+
+                    glm::vec3 dPos1 = glm::vec3(v1[0], v1[1], v1[2]) - glm::vec3(v0[0], v0[1], v0[2]);
+                    glm::vec3 dPos2 = glm::vec3(v2[0], v2[1], v2[2]) - glm::vec3(v0[0], v0[1], v0[2]);
+                    glm::vec2 dUV1 = glm::vec2(uv1[0], uv1[1]) - glm::vec2(uv0[0], uv0[1]);
+                    glm::vec2 dUV2 = glm::vec2(uv2[0], uv2[1]) - glm::vec2(uv0[0], uv0[1]);
+
+                    float r = 1.f / (dUV1.x * dUV2.y - dUV1.y * dUV2.x);
+                    bitangent = (dPos2 * dUV1.x - dPos1 * dUV2.x) * r;
+                    glm::vec3 tangent = (dPos1 * dUV2.y - dPos2 * dUV1.y) * r;
+
+                    glm::vec3 normal0 = glm::vec3(n0[0], n0[1], n0[2]);
+                    glm::vec3 normal1 = glm::vec3(n1[0], n1[1], n1[2]);
+                    glm::vec3 normal2 = glm::vec3(n2[0], n2[1], n2[2]);
+
+                    tangent0 = glm::normalize(tangent - normal0 * glm::dot(normal0, tangent));
+                    if (glm::dot(glm::cross(normal0, tangent0), bitangent) < 0.f) {
+                        tangent0 *= -1.f;
+                    }
+                    tangent1 = glm::normalize(tangent - normal1 * glm::dot(normal1, tangent));
+                    if (glm::dot(glm::cross(normal1, tangent1), bitangent) < 0.f) {
+                        tangent1 *= -1.f;
+                    }
+                    tangent2 = glm::normalize(tangent - normal2 * glm::dot(normal2, tangent));
+                    if (glm::dot(glm::cross(normal2, tangent2), bitangent) < 0.f) {
+                        tangent2 *= -1.f;
+                    }
+                };
+
+
+                if (!indices.size()) {
                     tangents.resize(vertCount * 3);
                     bitangents.resize(vertCount * 3);
                     for (int i = 0; i < vertCount; i += 3) {
@@ -401,10 +434,10 @@ namespace neo {
                     std::fill(tangents.begin(), tangents.end(), 0.f);
                     std::fill(bitangents.begin(), bitangents.end(), 0.f);
 
-                    for (int i = 0; i < indicies.size(); i += 3) {
-                        unsigned index0 = indicies[i + 0];
-                        unsigned index1 = indicies[i + 1];
-                        unsigned index2 = indicies[i + 2];
+                    for (int i = 0; i < indices.size(); i += 3) {
+                        unsigned index0 = indices[i + 0];
+                        unsigned index1 = indices[i + 1];
+                        unsigned index2 = indices[i + 2];
 
                         const float* v0 = &verts[index0 * 3];
                         const float* v1 = &verts[index1 * 3];
@@ -451,39 +484,6 @@ namespace neo {
 
                 return tangents.size() && bitangents.size();
             }
-
-            private:
-                static void _calculateTangentAndBitanget(const float* v0, const float *v1, const float* v2,
-                    const float* uv0, const float* uv1, const float* uv2, 
-                    const float* n0, const float* n1, const float* n2, 
-                    glm::vec3& tangent0, glm::vec3& tangent1, glm::vec3& tangent2, glm::vec3& bitangent) {
-
-                    glm::vec3 dPos1 = glm::vec3(v1[0], v1[1], v1[2]) - glm::vec3(v0[0], v0[1], v0[2]);
-                    glm::vec3 dPos2 = glm::vec3(v2[0], v2[1], v2[2]) - glm::vec3(v0[0], v0[1], v0[2]);
-                    glm::vec2 dUV1 = glm::vec2(uv1[0], uv1[1]) - glm::vec2(uv0[0], uv0[1]);
-                    glm::vec2 dUV2 = glm::vec2(uv2[0], uv2[1]) - glm::vec2(uv0[0], uv0[1]);
-
-                    float r = 1.f / (dUV1.x * dUV2.y - dUV1.y * dUV2.x);
-                    bitangent = (dPos2 * dUV1.x - dPos1 * dUV2.x) * r;
-                    glm::vec3 tangent = (dPos1 * dUV2.y - dPos2 * dUV1.y) * r;
-                    
-                    glm::vec3 normal0 = glm::vec3(n0[0], n0[1], n0[2]);
-                    glm::vec3 normal1 = glm::vec3(n1[0], n1[1], n1[2]);
-                    glm::vec3 normal2 = glm::vec3(n2[0], n2[1], n2[2]);
-
-                    tangent0 = glm::normalize(tangent - normal0 * glm::dot(normal0, tangent));
-                    if (glm::dot(glm::cross(normal0, tangent0), bitangent) < 0.f) {
-                        tangent0 *= -1.f;
-                    }
-                    tangent1 = glm::normalize(tangent - normal1 * glm::dot(normal1, tangent));
-                    if (glm::dot(glm::cross(normal1, tangent1), bitangent) < 0.f) {
-                        tangent1 *= -1.f;
-                    }
-                    tangent2 = glm::normalize(tangent - normal2 * glm::dot(normal2, tangent));
-                    if (glm::dot(glm::cross(normal2, tangent2), bitangent) < 0.f) {
-                        tangent2 *= -1.f;
-                    }
-                }
     };
 
 }

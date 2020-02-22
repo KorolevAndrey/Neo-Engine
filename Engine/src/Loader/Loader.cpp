@@ -20,6 +20,14 @@ namespace neo {
     bool Loader::mVerbose = false;
     std::string Loader::RES_DIR = "";
 
+    Asset::Asset(Mesh* mesh) :
+        mesh(mesh) {
+        ambientTexture = Library::getTexture("black");
+        diffuseTexture = Library::getTexture("black");
+        specularTexture = Library::getTexture("black");
+        displacementTexture = Library::getTexture("black");
+    }
+
     void Loader::init(const std::string &res, bool v) {
         RES_DIR = res;
         mVerbose = v;
@@ -102,9 +110,7 @@ namespace neo {
         // and tinyobjloader doesn't parse group/object names individually
         int objectCount = 0;
         for (auto& shape : shapes) {
-            Asset asset;
-
-            asset.mesh = Library::createEmptyMesh(fileName + "/" + shape.name + std::to_string(objectCount++));
+            Asset asset(Library::createEmptyMesh(fileName + "/" + shape.name + std::to_string(objectCount++)));
 
             /* Upload */
             asset.mesh->mPrimitiveType = GL_TRIANGLE_STRIP;
@@ -149,12 +155,10 @@ namespace neo {
 
                     if (material.diffuse_texname.size()) {
                         asset.diffuseTexture = Library::loadTexture(material.diffuse_texname, format);
+                        asset.ambientTexture = asset.diffuseTexture;
                     }
                     if (material.ambient_texname.size()) {
                         asset.ambientTexture = Library::loadTexture(material.ambient_texname, format);
-                    }
-                    else {
-                        asset.ambientTexture = asset.diffuseTexture;
                     }
                     if (material.specular_texname.size()) {
                         asset.specularTexture = Library::loadTexture(material.specular_texname, format);

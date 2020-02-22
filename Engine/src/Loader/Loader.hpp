@@ -25,6 +25,8 @@ namespace neo {
         // Texture* alphaTex = nullptr;        // map_d
         // Texture* bumpTex = nullptr;         // map_bump, bump
         // Texture* specularHighlightTex;     // map_Ns
+
+        Asset(Mesh* mesh);
     };
 
 

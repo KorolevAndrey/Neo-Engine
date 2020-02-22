@@ -25,9 +25,9 @@ uniform sampler2D normalMap;
 out vec4 color;
 
 void main() {
-    vec3 amb = diffuse * texture(ambientMap, fragTex).rgb;
+    vec3 amb = ambient * texture(ambientMap, fragTex).rgb;
     vec3 dif = diffuse * texture(diffuseMap, fragTex).rgb;
-    vec3 spec = specular * texture(specularMap, fragTex).rgb;
+    vec3 spec = specular + texture(specularMap, fragTex).rgb;
     vec3 V = TBN * (camPos - fragPos.xyz);
     vec3 L = TBN * (lightPos - fragPos.xyz);
     vec3 n = normalize(texture(normalMap, fragTex).rgb * 2.0 - 1.0);

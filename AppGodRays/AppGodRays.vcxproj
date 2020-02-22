@@ -139,6 +139,8 @@
     <None Include="shaders\godrayoccluder.frag" />
     <None Include="shaders\godraysun.frag" />
     <None Include="shaders\model.vert" />
+    <None Include="shaders\myphong.frag" />
+    <None Include="shaders\myphong.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

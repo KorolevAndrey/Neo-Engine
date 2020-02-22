@@ -53,5 +53,7 @@
     <None Include="shaders\blur.vert" />
     <None Include="shaders\blur.frag" />
     <None Include="shaders\combine.frag" />
+    <None Include="shaders\myphong.frag" />
+    <None Include="shaders\myphong.vert" />
   </ItemGroup>
 </Project>

@@ -17,10 +17,10 @@ public:
 
     MyPhongRenderable(GameObject *go, const Texture& ambientMap, const Texture& diffuseMap, const Texture& normalMap, const Texture& specularMap, Material material = Material{}) :
         Component(go),
-        mAmbientMap(diffuseMap),
+        mAmbientMap(ambientMap),
         mDiffuseMap(diffuseMap),
-        mNormalMap(diffuseMap),
-        mSpecularMap(diffuseMap),
+        mNormalMap(normalMap),
+        mSpecularMap(specularMap),
         mMaterial(material)
     {}
 };

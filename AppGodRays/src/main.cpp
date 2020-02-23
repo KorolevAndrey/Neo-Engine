@@ -11,6 +11,7 @@
 #include "nvidia/ACombineShader.hpp"
 
 #include "intel/BLinearZShader.hpp"
+#include "intel/BCoordinateShader.hpp"
 #include "intel/BCombineShader.hpp"
 
 #include "MyPhongRenderable.hpp"
@@ -113,7 +114,8 @@ int main() {
     // Intel
     {
         Renderer::setDefaultFBO("default");
-        auto& linearZ = Renderer::addPreProcessShader<BLinearZShader>("intel/linearz.frag");
+        Renderer::addPreProcessShader<BLinearZShader>("intel/linearz.frag");
+        Renderer::addPreProcessShader<BCoordinateShader>("intel/coordinate.frag");
         Renderer::addPostProcessShader<BCombineShader>("intel/combine.frag");
     }
     Renderer::addSceneShader<MyPhongShader>("myphong.vert", "myphong.frag");
@@ -131,11 +133,13 @@ int main() {
             Renderer::setDefaultFBO("0");
 
             Renderer::getShader<BLinearZShader>().mActive = false;
+            Renderer::getShader<BCoordinateShader>().mActive = false;
         }
         ImGui::SameLine();
         if (ImGui::RadioButton("Use intel", !useNvidia)) {
             useNvidia = false;
             Renderer::getShader<BLinearZShader>().mActive = true;
+            Renderer::getShader<BCoordinateShader>().mActive = true;
             Renderer::setDefaultFBO("default");
 
             Renderer::getShader<AGodRaySunShader>().mActive = false;

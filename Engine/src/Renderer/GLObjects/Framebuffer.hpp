@@ -51,7 +51,12 @@ namespace neo {
             NEO_ASSERT(t->mFormat.mBaseFormat == GL_DEPTH_COMPONENT, "Invalid depth target format"); // or depth_16, 24, 32
             _attachTexture(GL_DEPTH_ATTACHMENT, *t);
         }
-        
+                
+        void attachStencilTexture(glm::ivec2 size, GLint filter, GLenum mode) {
+            Texture *t = new Texture2D(TextureFormat{ GL_STENCIL_INDEX8, GL_STENCIL, filter, mode }, size, nullptr);
+            _attachTexture(GL_STENCIL_ATTACHMENT, *t);
+        }
+
         void initDrawBuffers() {
             if (!mColorAttachments) {
                 return;

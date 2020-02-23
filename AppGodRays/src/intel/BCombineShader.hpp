@@ -18,6 +18,7 @@ class BCombineShader : public PostProcessShader {
 
         virtual void render() override {
             loadTexture("linearz", *Library::getFBO("linearZ")->mTextures[0]);
+            loadTexture("coordinate", *Library::getFBO("coordinate")->mTextures[0]);
         }
 
         virtual void imguiEditor() override {

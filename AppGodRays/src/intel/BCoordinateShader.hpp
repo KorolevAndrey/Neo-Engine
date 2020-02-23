@@ -27,7 +27,7 @@ class BCoordinateShader : public Shader {
             init();
 
             auto fbo = Library::createFBO("coordinate");
-            TextureFormat format = { GL_RG16F, GL_RG, GL_NEAREST, GL_REPEAT };
+            TextureFormat format = { GL_RGBA32F, GL_RGBA, GL_NEAREST, GL_REPEAT };
             fbo->attachColorTexture(Window::getFrameSize(), format);
 
             // Starting with epipolar coordinates first
@@ -50,12 +50,25 @@ class BCoordinateShader : public Shader {
             Library::getFBO("coordinate")->bind();
             glm::ivec2 frameSize = Window::getFrameSize();
             CHECK_GL(glViewport(0, 0, frameSize.x, frameSize.y));
+            CHECK_GL(glClear(GL_COLOR_BUFFER_BIT));
 
+            loadUniform("numSamples", numSamples);
+            loadUniform("numSlices", numSlices);
+            loadUniform("screenSize", glm::vec2(frameSize));
             loadTexture("linearz", *Library::getFBO("linearZ")->mTextures[0]);
+
+            if (auto light = Engine::getComponentTuple<LightComponent, SpatialComponent>()) {
+                loadUniform("lightPos", light->get<SpatialComponent>()->getPosition());
+            }
+            if (auto camera = Engine::getComponentTuple<MainCameraComponent, CameraComponent>()) {
+                loadUniform("V", camera->get<CameraComponent>()->getView());
+            }
 
             Library::getMesh("quad")->draw();
         }
 
         virtual void imguiEditor() override {
+            ImGui::SliderInt("Samples", &numSamples, 1, 64);
+            ImGui::SliderInt("Slices", &numSlices, 1, 64);
         }
 };

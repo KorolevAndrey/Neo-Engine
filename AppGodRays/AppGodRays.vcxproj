@@ -122,10 +122,10 @@
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\BlurShader.hpp" />
-    <ClInclude Include="src\CombineShader.hpp" />
-    <ClInclude Include="src\GodRayOccluderShader.hpp" />
-    <ClInclude Include="src\GodRaySunShader.hpp" />
+    <ClInclude Include="src\nvidia\ABlurShader.hpp" />
+    <ClInclude Include="src\nvidia\ACombineShader.hpp" />
+    <ClInclude Include="src\nvidia\AGodRayOccluderShader.hpp" />
+    <ClInclude Include="src\nvidia\AGodRaySunShader.hpp" />
     <ClInclude Include="src\MyPhongRenderable.hpp" />
     <ClInclude Include="src\MyPhongShader.hpp" />
     <ClInclude Include="src\SunComponent.hpp" />
@@ -133,11 +133,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\billboard.vert" />
-    <None Include="shaders\blur.frag" />
-    <None Include="shaders\blur.vert" />
-    <None Include="shaders\combine.frag" />
-    <None Include="shaders\godrayoccluder.frag" />
-    <None Include="shaders\godraysun.frag" />
+    <None Include="shaders\nvidia\blur.frag" />
+    <None Include="shaders\nvidia\blur.vert" />
+    <None Include="shaders\nvidia\combine.frag" />
+    <None Include="shaders\nvidia\godrayoccluder.frag" />
+    <None Include="shaders\nvidia\godraysun.frag" />
     <None Include="shaders\model.vert" />
     <None Include="shaders\myphong.frag" />
     <None Include="shaders\myphong.vert" />

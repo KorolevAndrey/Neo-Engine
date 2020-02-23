@@ -23,19 +23,7 @@
     <ClInclude Include="src\SunComponent.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\GodRaySunShader.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\GodRayOccluderShader.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\SunOccluderComponent.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\BlurShader.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\CombineShader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\MyPhongRenderable.hpp">
@@ -44,16 +32,28 @@
     <ClInclude Include="src\MyPhongShader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\nvidia\ABlurShader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nvidia\ACombineShader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nvidia\AGodRayOccluderShader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nvidia\AGodRaySunShader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\billboard.vert" />
-    <None Include="shaders\godraysun.frag" />
     <None Include="shaders\model.vert" />
-    <None Include="shaders\godrayoccluder.frag" />
-    <None Include="shaders\blur.vert" />
-    <None Include="shaders\blur.frag" />
-    <None Include="shaders\combine.frag" />
     <None Include="shaders\myphong.frag" />
     <None Include="shaders\myphong.vert" />
+    <None Include="shaders\nvidia\blur.frag" />
+    <None Include="shaders\nvidia\blur.vert" />
+    <None Include="shaders\nvidia\combine.frag" />
+    <None Include="shaders\nvidia\godrayoccluder.frag" />
+    <None Include="shaders\nvidia\godraysun.frag" />
   </ItemGroup>
 </Project>

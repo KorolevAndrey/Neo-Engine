@@ -9,31 +9,31 @@
 
 using namespace neo;
 
-class GodRaySunShader : public Shader {
+class AGodRaySunShader : public Shader {
 
     public:
 
-        GodRaySunShader(const std::string &vert, const std::string &frag) :
-            Shader("GodRaySun Shader", vert, frag) {
+        AGodRaySunShader(const std::string &vert, const std::string &frag) :
+            Shader("AGodRaySun Shader", vert, frag) {
 
-            // Create godray 
+            // Create agodray 
             // 0 used for base 
             TextureFormat format = { GL_R16, GL_RED, GL_LINEAR, GL_CLAMP_TO_EDGE };
-            auto godray = Library::createFBO("godray");
-            godray->attachColorTexture(Window::getFrameSize() / 2, format); 
-            godray->initDrawBuffers();
+            auto agodray = Library::createFBO("agodray");
+            agodray->attachColorTexture(Window::getFrameSize() / 2, format); 
+            agodray->initDrawBuffers();
 
             // Handle frame size changing
             Messenger::addReceiver<WindowFrameSizeMessage>(nullptr, [&](const Message &msg) {
                 const WindowFrameSizeMessage & m(static_cast<const WindowFrameSizeMessage &>(msg));
                 glm::ivec2 frameSize = (static_cast<const WindowFrameSizeMessage &>(msg)).frameSize;
-                Library::getFBO("godray")->resize(frameSize / 2);
+                Library::getFBO("agodray")->resize(frameSize / 2);
             });
 
         }
 
         virtual void render() override {
-            auto fbo = Library::getFBO("godray");
+            auto fbo = Library::getFBO("agodray");
             fbo->bind();
             CHECK_GL(glClearColor(0.f, 0.f, 0.f, 1.f));
             glm::ivec2 frameSize = Window::getFrameSize() / 2;

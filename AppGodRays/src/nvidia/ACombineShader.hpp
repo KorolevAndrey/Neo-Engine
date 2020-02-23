@@ -8,18 +8,18 @@
 
 using namespace neo;
 
-class CombineShader : public PostProcessShader {
+class ACombineShader : public PostProcessShader {
 
     public:
 
         float exposure = 0.9f;
 
-        CombineShader(const std::string &frag) :
-            PostProcessShader("Combine Shader", frag) 
+        ACombineShader(const std::string &frag) :
+            PostProcessShader("ACombine Shader", frag) 
         {}
 
         virtual void render() override {
-            loadTexture("godray", *Library::getFBO("godrayblur")->mTextures[0]);
+            loadTexture("godray", *Library::getFBO("ablur")->mTextures[0]);
 
             loadUniform("sunColor", Engine::getSingleComponent<SunComponent>()->getGameObject().getComponentByType<LightComponent>()->mColor);
             loadUniform("exposure", exposure);

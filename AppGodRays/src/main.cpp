@@ -5,10 +5,10 @@
 
 #include "SunComponent.hpp"
 #include "SunOccluderComponent.hpp"
-#include "GodRaySunShader.hpp"
-#include "GodRayOccluderShader.hpp"
-#include "BlurShader.hpp"
-#include "CombineShader.hpp"
+#include "nvidia/AGodRaySunShader.hpp"
+#include "nvidia/AGodRayOccluderShader.hpp"
+#include "nvidia/ABlurShader.hpp"
+#include "nvidia/ACombineShader.hpp"
 
 #include "MyPhongRenderable.hpp"
 #include "MyPhongShader.hpp"
@@ -24,7 +24,7 @@ struct Camera {
         GameObject *gameObject = &Engine::createGameObject();
         Engine::addComponent<SpatialComponent>(gameObject, pos, glm::vec3(1.f));
         camera = &Engine::addComponentAs<PerspectiveCameraComponent, CameraComponent>(gameObject, near, far, fov, Window::getAspectRatio());
-        Engine::addComponent<CameraControllerComponent>(gameObject, ls, ms);
+        auto& cameraController = Engine::addComponent<CameraControllerComponent>(gameObject, ls, ms);
     }
 };
 
@@ -60,10 +60,10 @@ int main() {
     Engine::init(config);
 
     /* Game objects */
-    Camera camera(45.f, 1.f, 500.f, glm::vec3(0, 0.6f, 5), 0.4f, 7.f);
+    Camera camera(45.f, 1.f, 500.f, glm::vec3(0, 0.6f, 5), 0.4f, 0.7f);
     Engine::addComponent<MainCameraComponent>(&camera.camera->getGameObject());
 
-    Light(glm::vec3(0.f, 2.f, -20.f), 12.f, glm::vec3(1.f), glm::vec3(0.6, 0.2, 0.f));
+    Light(glm::vec3(150.f, 300.f, -50.f), 45.f, glm::vec3(1.f), glm::vec3(0.f));
 
     /* Sponza object */
     {
@@ -82,18 +82,38 @@ int main() {
     }
 
     /* Systems - order matters! */
-    Engine::addSystem<CameraControllerSystem>();
+    auto& camSystem = Engine::addSystem<CameraControllerSystem>();
+    camSystem.mSuperSpeed = 15.f;
 
     /* Init renderer */
     Renderer::init("shaders/");
-    // Renderer::addPreProcessShader<GodRaySunShader>("billboard.vert", "godraysun.frag");
-    // Renderer::addPreProcessShader<GodRayOccluderShader>("model.vert", "godrayoccluder.frag");
-    // Renderer::addPreProcessShader<BlurShader>("blur.vert", "blur.frag");
+    Renderer::addPreProcessShader<AGodRaySunShader>("billboard.vert", "nvidia/godraysun.frag");
+    Renderer::addPreProcessShader<AGodRayOccluderShader>("model.vert", "nvidia/godrayoccluder.frag");
+    Renderer::addPreProcessShader<ABlurShader>("nvidia/blur.vert", "nvidia/blur.frag");
     Renderer::addSceneShader<MyPhongShader>("myphong.vert", "myphong.frag");
-    // Renderer::addPostProcessShader<CombineShader>("combine.frag");
-    // Renderer::addPostProcessShader<GammaCorrectShader>();
+    Renderer::addPostProcessShader<ACombineShader>("nvidia/combine.frag");
+    auto& gamma = Renderer::addPostProcessShader<GammaCorrectShader>();
+    gamma.gamma = 1.5f;
 
     /* Attach ImGui panes */
+    Engine::addImGuiFunc("Godray", []() {
+        static bool useNvidia = true;
+        if (ImGui::RadioButton("Use nvidia", useNvidia)) {
+            useNvidia = true;
+            Renderer::getShader<AGodRaySunShader>().mActive = true;
+            Renderer::getShader<AGodRayOccluderShader>().mActive = true;
+            Renderer::getShader<ABlurShader>().mActive = true;
+            Renderer::getShader<ACombineShader>().mActive = true;
+        }
+        ImGui::SameLine();
+        if (ImGui::RadioButton("Use intel", !useNvidia)) {
+            useNvidia = false;
+            Renderer::getShader<AGodRaySunShader>().mActive = false;
+            Renderer::getShader<AGodRayOccluderShader>().mActive = false;
+            Renderer::getShader<ABlurShader>().mActive = false;
+            Renderer::getShader<ACombineShader>().mActive = false;
+        }
+    });
 
     /* Run */
     Engine::run();

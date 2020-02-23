@@ -3,24 +3,26 @@
 #include "Renderer/Shader/Shader.hpp"
 #include "Renderer/GLObjects/GLHelper.hpp"
 
+#include "SunComponent.hpp"
+
 #include "Engine.hpp"
 
 using namespace neo;
 
-class BlurShader : public Shader {
+class ABlurShader : public Shader {
 
     public:
 
-        float mBlurSteps = 67.f;
+        float mABlurSteps = 67.f;
         float mDecay=0.954f;
         float mDensity=0.78f;
         float mWeight=0.69f;
         float mContribution = 0.4f;
 
-        BlurShader(const std::string &vert, const std::string& frag) :
-            Shader("Blur Shader", vert, frag) {
+        ABlurShader(const std::string &vert, const std::string& frag) :
+            Shader("ABlur Shader", vert, frag) {
             // Create blur 
-            auto blur = Library::createFBO("godrayblur");
+            auto blur = Library::createFBO("ablur");
             TextureFormat format = { GL_R16, GL_RED, GL_NEAREST, GL_REPEAT };
             blur->attachColorTexture(Window::getFrameSize() / 2, format); 
             blur->initDrawBuffers();
@@ -29,25 +31,25 @@ class BlurShader : public Shader {
             Messenger::addReceiver<WindowFrameSizeMessage>(nullptr, [&](const Message &msg) {
                 const WindowFrameSizeMessage & m(static_cast<const WindowFrameSizeMessage &>(msg));
                 glm::ivec2 frameSize = (static_cast<const WindowFrameSizeMessage &>(msg)).frameSize;
-                Library::getFBO("godrayblur")->resize(frameSize / 2);
+                Library::getFBO("ablur")->resize(frameSize / 2);
             });
 
         }
 
         virtual void render() override {
-            auto fbo = Library::getFBO("godrayblur");
+            auto fbo = Library::getFBO("ablur");
             fbo->bind();
             glm::ivec2 frameSize = Window::getFrameSize() / 2;
             CHECK_GL(glViewport(0, 0, frameSize.x, frameSize.y));
 
             bind();
 
-            loadTexture("godray", *Library::getFBO("godray")->mTextures[0]);
+            loadTexture("godray", *Library::getFBO("agodray")->mTextures[0]);
 
             loadUniform("decay", mDecay);
             loadUniform("density", mDensity);
             loadUniform("weight", mWeight);
-            loadUniform("blurSteps", mBlurSteps);
+            loadUniform("blurSteps", mABlurSteps);
             loadUniform("contribution", mContribution);
 
             auto mainCamera = Engine::getComponentTuple<MainCameraComponent, CameraComponent>();
@@ -71,7 +73,7 @@ class BlurShader : public Shader {
         }
 
         virtual void imguiEditor() override {
-            ImGui::SliderFloat("Steps", &mBlurSteps, 0.01f, 100.f);
+            ImGui::SliderFloat("Steps", &mABlurSteps, 0.01f, 100.f);
             ImGui::SliderFloat("Decay", &mDecay, 0.01f, 1.f);
             ImGui::SliderFloat("Density", &mDensity, 0.01f, 1.f);
             ImGui::SliderFloat("Weight", &mWeight, 0.01f, 1.f);

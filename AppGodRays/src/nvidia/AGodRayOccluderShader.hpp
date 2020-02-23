@@ -10,12 +10,12 @@
 
 using namespace neo;
 
-class GodRayOccluderShader : public Shader {
+class AGodRayOccluderShader : public Shader {
 
     public:
 
-        GodRayOccluderShader(const std::string &vert, const std::string &frag) :
-            Shader("GodRayOccluder Shader", vert, frag) {
+        AGodRayOccluderShader(const std::string &vert, const std::string &frag) :
+            Shader("AGodRayOccluder Shader", vert, frag) {
         }
 
         virtual void render() override {
@@ -24,7 +24,7 @@ class GodRayOccluderShader : public Shader {
                 return;
             }
 
-            auto fbo = Library::getFBO("godray");
+            auto fbo = Library::getFBO("agodray");
             fbo->bind();
             glm::ivec2 frameSize = Window::getFrameSize() / 2;
             CHECK_GL(glViewport(0, 0, frameSize.x, frameSize.y));

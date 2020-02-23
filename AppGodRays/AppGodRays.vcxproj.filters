@@ -44,6 +44,9 @@
     <ClInclude Include="src\nvidia\AGodRaySunShader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\intel\BLinearZShader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\billboard.vert" />
@@ -55,5 +58,6 @@
     <None Include="shaders\nvidia\combine.frag" />
     <None Include="shaders\nvidia\godrayoccluder.frag" />
     <None Include="shaders\nvidia\godraysun.frag" />
+    <None Include="shaders\intel\linearz.frag" />
   </ItemGroup>
 </Project>

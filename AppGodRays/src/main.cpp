@@ -10,6 +10,8 @@
 #include "nvidia/ABlurShader.hpp"
 #include "nvidia/ACombineShader.hpp"
 
+#include "intel/BLinearZShader.hpp"
+
 #include "MyPhongRenderable.hpp"
 #include "MyPhongShader.hpp"
 
@@ -98,17 +100,25 @@ int main() {
     });
 
     Renderer::init("shaders/");
-    Renderer::addPreProcessShader<AGodRaySunShader>("billboard.vert", "nvidia/godraysun.frag");
-    Renderer::addPreProcessShader<AGodRayOccluderShader>("model.vert", "nvidia/godrayoccluder.frag");
-    Renderer::addPreProcessShader<ABlurShader>("nvidia/blur.vert", "nvidia/blur.frag");
+    // Nvidia
+    {
+        auto& a = Renderer::addPreProcessShader<AGodRaySunShader>("billboard.vert", "nvidia/godraysun.frag");
+        auto& b = Renderer::addPreProcessShader<AGodRayOccluderShader>("model.vert", "nvidia/godrayoccluder.frag");
+        auto& c = Renderer::addPreProcessShader<ABlurShader>("nvidia/blur.vert", "nvidia/blur.frag");
+        auto& d = Renderer::addPostProcessShader<ACombineShader>("nvidia/combine.frag");
+        a.mActive = b.mActive = c.mActive = d.mActive = false;
+    }
+    // Intel
+    {
+        auto& linearZ = Renderer::addPostProcessShader<BLinearZShader>("intel/linearz.frag");
+    }
     Renderer::addSceneShader<MyPhongShader>("myphong.vert", "myphong.frag");
-    Renderer::addPostProcessShader<ACombineShader>("nvidia/combine.frag");
     auto& gamma = Renderer::addPostProcessShader<GammaCorrectShader>();
     gamma.gamma = 1.5f;
 
     /* Attach ImGui panes */
     Engine::addImGuiFunc("Godray", []() {
-        static bool useNvidia = true;
+        static bool useNvidia = false;
         if (ImGui::RadioButton("Use nvidia", useNvidia)) {
             useNvidia = true;
             Renderer::getShader<AGodRaySunShader>().mActive = true;
@@ -116,15 +126,19 @@ int main() {
             Renderer::getShader<ABlurShader>().mActive = true;
             Renderer::getShader<ACombineShader>().mActive = true;
             Renderer::setDefaultFBO("0");
+
+            Renderer::getShader<BLinearZShader>().mActive = false;
         }
         ImGui::SameLine();
         if (ImGui::RadioButton("Use intel", !useNvidia)) {
             useNvidia = false;
+            Renderer::getShader<BLinearZShader>().mActive = true;
+            Renderer::setDefaultFBO("default");
+
             Renderer::getShader<AGodRaySunShader>().mActive = false;
             Renderer::getShader<AGodRayOccluderShader>().mActive = false;
             Renderer::getShader<ABlurShader>().mActive = false;
             Renderer::getShader<ACombineShader>().mActive = false;
-            Renderer::setDefaultFBO("default");
         }
     });
 

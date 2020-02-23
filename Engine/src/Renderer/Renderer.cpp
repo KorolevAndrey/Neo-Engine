@@ -242,7 +242,8 @@ namespace neo {
     }
 
     void Renderer::setDefaultFBO(const std::string &name) {
-        auto fb = Library::getFBO(name);
+        std::string _n = name == "0" && !_getActiveShaders(mPostShaders).empty() ? "pong" : name;
+        auto fb = Library::getFBO(_n);
         NEO_ASSERT(fb, "Attempting to set an invalid FBO");
         mDefaultFBO = fb;
     }

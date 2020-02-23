@@ -86,6 +86,17 @@ int main() {
     camSystem.mSuperSpeed = 15.f;
 
     /* Init renderer */
+    auto gbuffer = Library::createFBO("default");
+    TextureFormat format = { GL_RGBA, GL_RGBA, GL_NEAREST, GL_REPEAT };
+    gbuffer->attachColorTexture(Window::getFrameSize(), format);
+    gbuffer->attachDepthTexture(Window::getFrameSize(), GL_NEAREST, GL_REPEAT);
+    gbuffer->initDrawBuffers();
+    Messenger::addReceiver<WindowFrameSizeMessage>(nullptr, [&](const Message &msg) {
+        const WindowFrameSizeMessage & m(static_cast<const WindowFrameSizeMessage &>(msg));
+        glm::uvec2 frameSize = (static_cast<const WindowFrameSizeMessage &>(msg)).frameSize;
+        Library::getFBO("default")->resize(frameSize);
+    });
+
     Renderer::init("shaders/");
     Renderer::addPreProcessShader<AGodRaySunShader>("billboard.vert", "nvidia/godraysun.frag");
     Renderer::addPreProcessShader<AGodRayOccluderShader>("model.vert", "nvidia/godrayoccluder.frag");
@@ -104,6 +115,7 @@ int main() {
             Renderer::getShader<AGodRayOccluderShader>().mActive = true;
             Renderer::getShader<ABlurShader>().mActive = true;
             Renderer::getShader<ACombineShader>().mActive = true;
+            Renderer::setDefaultFBO("0");
         }
         ImGui::SameLine();
         if (ImGui::RadioButton("Use intel", !useNvidia)) {
@@ -112,6 +124,7 @@ int main() {
             Renderer::getShader<AGodRayOccluderShader>().mActive = false;
             Renderer::getShader<ABlurShader>().mActive = false;
             Renderer::getShader<ACombineShader>().mActive = false;
+            Renderer::setDefaultFBO("default");
         }
     });
 

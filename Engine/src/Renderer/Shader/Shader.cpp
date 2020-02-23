@@ -235,9 +235,7 @@ namespace neo {
         if (r < 0) {
             std::cerr << this->mName << " WARN: " << name << " cannot be bound (it either doesn't exist or has been optimized away). safe_glAttrib calls will silently ignore it\n" << std::endl;
         }
-        else {
-            mAttributes[name] = r;
-        }
+        mAttributes[name] = r;
     }
 
     void Shader::_addUniform(const std::string &name) {
@@ -245,15 +243,13 @@ namespace neo {
         if (r < 0) {
             std::cerr << this->mName << " WARN: " << name << " cannot be bound (it either doesn't exist or has been optimized away). safe_glAttrib calls will silently ignore it\n" << std::endl;
         }
-        else {
-            mUniforms[name] = r;
-        }
+        mUniforms[name] = r;
     }
 
     GLint Shader::getAttribute(const std::string &name) const {
         std::map<std::string, GLint>::const_iterator attribute = mAttributes.find(name.c_str());
         if (attribute == mAttributes.end()) {
-            // std::cerr << name << " is not an attribute variable - did you remember to call Shader::init()" << std::endl;
+            std::cerr << name << " is not an attribute variable - did you remember to call Shader::init()" << std::endl;
             return -1;
         }
         return attribute->second;
@@ -262,7 +258,7 @@ namespace neo {
     GLint Shader::getUniform(const std::string &name) const {
         std::map<std::string, GLint>::const_iterator uniform = mUniforms.find(name.c_str());
         if (uniform == mUniforms.end()) {
-            // std::cerr << name << " is not an uniform variable - did you remember to call Shader::init()" << std::endl;
+            std::cerr << name << " is not an uniform variable - did you remember to call Shader::init()" << std::endl;
             return -1;
         }
         return uniform->second;
@@ -299,6 +295,10 @@ namespace neo {
             return GL_TESS_EVALUATION_SHADER;
         }
         NEO_ASSERT(false, "Invalid ShaderStage");
+    }
+
+    void Shader::loadUniform(const std::string &loc, void* v) const {
+        NEO_ASSERT(false, "Invalid uniform type");
     }
 
     void Shader::loadUniform(const std::string &loc, const bool b) const {

@@ -5,7 +5,6 @@ in vec4 fragPos;
 in vec2 fragTex;
 
 uniform sampler2D alphaMap;
-uniform bool useTexture;
 
 out vec4 color;
 

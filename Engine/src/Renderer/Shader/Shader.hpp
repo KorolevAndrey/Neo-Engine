@@ -55,6 +55,7 @@ namespace neo {
             void cleanUp();
 
             /* Parent load functions */
+            void loadUniform(const std::string &, void*) const;               // invalid
             void loadUniform(const std::string &, const bool) const;          // bool
             void loadUniform(const std::string &, const int) const;           // int
             void loadUniform(const std::string &, const double) const;        // double

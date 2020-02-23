@@ -11,6 +11,7 @@
 #include "nvidia/ACombineShader.hpp"
 
 #include "intel/BLinearZShader.hpp"
+#include "intel/BCombineShader.hpp"
 
 #include "MyPhongRenderable.hpp"
 #include "MyPhongShader.hpp"
@@ -88,17 +89,18 @@ int main() {
     camSystem.mSuperSpeed = 15.f;
 
     /* Init renderer */
-    auto gbuffer = Library::createFBO("default");
+    auto defaultFBO = Library::createFBO("default");
     TextureFormat format = { GL_RGBA, GL_RGBA, GL_NEAREST, GL_REPEAT };
-    gbuffer->attachColorTexture(Window::getFrameSize(), format);
-    gbuffer->attachDepthTexture(Window::getFrameSize(), GL_NEAREST, GL_REPEAT);
-    gbuffer->initDrawBuffers();
+    defaultFBO->attachColorTexture(Window::getFrameSize(), format);
+    defaultFBO->attachDepthTexture(Window::getFrameSize(), GL_NEAREST, GL_REPEAT);
+    defaultFBO->initDrawBuffers();
     Messenger::addReceiver<WindowFrameSizeMessage>(nullptr, [&](const Message &msg) {
         const WindowFrameSizeMessage & m(static_cast<const WindowFrameSizeMessage &>(msg));
         glm::uvec2 frameSize = (static_cast<const WindowFrameSizeMessage &>(msg)).frameSize;
         Library::getFBO("default")->resize(frameSize);
     });
 
+    bool useNvidia = false;
     Renderer::init("shaders/");
     // Nvidia
     {
@@ -110,15 +112,16 @@ int main() {
     }
     // Intel
     {
-        auto& linearZ = Renderer::addPostProcessShader<BLinearZShader>("intel/linearz.frag");
+        Renderer::setDefaultFBO("default");
+        auto& linearZ = Renderer::addPreProcessShader<BLinearZShader>("intel/linearz.frag");
+        Renderer::addPostProcessShader<BCombineShader>("intel/combine.frag");
     }
     Renderer::addSceneShader<MyPhongShader>("myphong.vert", "myphong.frag");
     auto& gamma = Renderer::addPostProcessShader<GammaCorrectShader>();
     gamma.gamma = 1.5f;
 
     /* Attach ImGui panes */
-    Engine::addImGuiFunc("Godray", []() {
-        static bool useNvidia = false;
+    Engine::addImGuiFunc("Godray", [&]() {
         if (ImGui::RadioButton("Use nvidia", useNvidia)) {
             useNvidia = true;
             Renderer::getShader<AGodRaySunShader>().mActive = true;

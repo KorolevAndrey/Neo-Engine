@@ -122,6 +122,7 @@
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\intel\BCombineShader.hpp" />
     <ClInclude Include="src\intel\BLinearZShader.hpp" />
     <ClInclude Include="src\nvidia\ABlurShader.hpp" />
     <ClInclude Include="src\nvidia\ACombineShader.hpp" />
@@ -134,6 +135,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\billboard.vert" />
+    <None Include="shaders\intel\combine.frag" />
     <None Include="shaders\intel\linearz.frag" />
     <None Include="shaders\nvidia\blur.frag" />
     <None Include="shaders\nvidia\blur.vert" />

@@ -433,7 +433,7 @@ namespace neo {
                     std::fill(tangents.begin(), tangents.end(), 0.f);
                     std::fill(bitangents.begin(), bitangents.end(), 0.f);
 
-                    for (int i = 0; i < indices.size(); i += 3) {
+                    for (unsigned i = 0; i < indices.size(); i += 3) {
                         unsigned index0 = indices[i + 0];
                         unsigned index1 = indices[i + 1];
                         unsigned index2 = indices[i + 2];

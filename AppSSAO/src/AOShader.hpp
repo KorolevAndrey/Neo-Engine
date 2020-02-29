@@ -16,6 +16,7 @@ class AOShader : public PostProcessShader {
         float radius = 0.925f;
         float bias = 0.5f;
 
+        // TODO - this is full res..
         AOShader(const std::string &frag) :
             PostProcessShader("AO Shader", frag) {
 
@@ -29,7 +30,7 @@ class AOShader : public PostProcessShader {
         }
 
         void generateKernel(unsigned size) {
-            std::vector<uint8_t> kernel;
+            std::vector<float> kernel;
             for (unsigned i = 0; i < size; i++) {
                 glm::vec3 sample(
                     Util::genRandom(-1.f, 1.f),
@@ -41,15 +42,15 @@ class AOShader : public PostProcessShader {
                 float scale = (float)i / (float)size;
                 scale = Util::lerp(0.1f, 1.f, scale * scale);
                 sample *= scale;
-                kernel.push_back(static_cast<uint8_t>(sample.x));
-                kernel.push_back(static_cast<uint8_t>(sample.y));
-                kernel.push_back(static_cast<uint8_t>(sample.z));
+                kernel.push_back(sample.x);
+                kernel.push_back(sample.y);
+                kernel.push_back(sample.z);
             };
             Library::getTexture("aoKernel")->update(glm::uvec2(size, 1), kernel.data());
         }
 
         void generateNoise(unsigned dim) {
-            std::vector<uint8_t> noise;
+            std::vector<float> noise;
             noise.resize(dim*dim*3);
             for (unsigned i = 0; i < dim*dim*3; i+=3) {
                 noise[i + 0] = Util::genRandom();

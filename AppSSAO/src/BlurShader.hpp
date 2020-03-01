@@ -9,7 +9,7 @@ class BlurShader : public PostProcessShader {
 
     public:
 
-        int blurAmount = 6;
+        int blurAmount = 4;
 
         // TODO - this is full-res..
         BlurShader(const std::string &frag) :

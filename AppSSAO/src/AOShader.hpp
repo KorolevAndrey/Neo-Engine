@@ -13,8 +13,8 @@ class AOShader : public PostProcessShader {
 
     public:
 
-        float radius = 0.925f;
-        float bias = 0.5f;
+        float radius = 0.28;
+        float bias = 0.52f;
 
         // TODO - this is full res..
         AOShader(const std::string &frag) :
@@ -22,11 +22,11 @@ class AOShader : public PostProcessShader {
 
             // generate kernel
             Texture *kernelTex = Library::createEmptyTexture<Texture1D>("aoKernel", { GL_RGB16F, GL_RGB, GL_NEAREST, GL_REPEAT, GL_UNSIGNED_BYTE });
-            generateKernel(32);
+            generateKernel(16);
 
             // generate 4x4 noise texture
             Texture *noiseTex = Library::createEmptyTexture<Texture2D>("aoNoise", { GL_RGB16F, GL_RGB, GL_NEAREST, GL_REPEAT, GL_UNSIGNED_BYTE });
-            generateNoise(4);
+            generateNoise(8);
         }
 
         void generateKernel(unsigned size) {
@@ -67,8 +67,8 @@ class AOShader : public PostProcessShader {
 
             // bind gbuffer
             auto gbuffer = Library::getFBO("gbuffer");
-            loadTexture("gNormal", *gbuffer->mTextures[0]);
-            loadTexture("gDepth",  *gbuffer->mTextures[2]);
+            loadTexture("gNormal", *gbuffer->mTextures[1]);
+            loadTexture("gDepth",  *gbuffer->mTextures[3]);
 
             // bind kernel and noise
             loadTexture("noise", *Library::getTexture("aoNoise"));

@@ -15,7 +15,7 @@ namespace neo {
     class Mesh;
 
     struct Asset {
-        Mesh* mesh;
+        const Mesh& mesh;
         Material material;
         Texture* ambientTexture = nullptr;      // map_Ka
         Texture* diffuseTexture = nullptr;      // map_Kd
@@ -25,7 +25,9 @@ namespace neo {
         // Texture* bumpTex = nullptr;         // map_bump, bump
         // Texture* specularHighlightTex;     // map_Ns
 
-        Asset(Mesh* mesh);
+        Asset(const Mesh& mesh) :
+            mesh(mesh)
+        {}
     };
 
 

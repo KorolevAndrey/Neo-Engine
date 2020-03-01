@@ -20,9 +20,14 @@ class GBufferShader : public Shader {
             // Create gbuffer 
             auto gbuffer = Library::createFBO("gbuffer");
 
-            TextureFormat format{ GL_RGB, GL_RGB, GL_NEAREST, GL_CLAMP_TO_EDGE };
+            TextureFormat format{ GL_RGBA, GL_RGBA, GL_NEAREST, GL_CLAMP_TO_EDGE };
+            gbuffer->attachColorTexture(Window::getFrameSize(), format); // diffuse, ambient
+            format.mSizedFormat = GL_RGB16F;
+            format.mBaseFormat = GL_RGB;
             gbuffer->attachColorTexture(Window::getFrameSize(), format); // normal
-            gbuffer->attachColorTexture(Window::getFrameSize(), format); // color
+            format.mSizedFormat = GL_RGBA16F;
+            format.mBaseFormat = GL_RGBA;
+            gbuffer->attachColorTexture(Window::getFrameSize(), format); // specular
             gbuffer->attachDepthTexture(Window::getFrameSize(), GL_NEAREST, GL_CLAMP_TO_EDGE);  // depth
             gbuffer->initDrawBuffers();
 
@@ -38,6 +43,7 @@ class GBufferShader : public Shader {
             auto fbo = Library::getFBO("gbuffer");
             fbo->bind();
             CHECK_GL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+            CHECK_GL(glDisable(GL_BLEND));
 
             bind();
 
@@ -53,10 +59,14 @@ class GBufferShader : public Shader {
                 loadUniform("M", spatial->getModelMatrix());
                 loadUniform("N", spatial->getNormalMatrix());
 
-                /* Bind diffuse map or material */
+                loadTexture("alphaMap", renderable->mAlphaMap);
+                loadTexture("diffuseMap", renderable->mDiffuseMap);
+                loadTexture("specularMap", renderable->mSpecularMap);
+
                 loadUniform("ambientColor", renderable->mMaterial.mAmbient);
                 loadUniform("diffuseColor", renderable->mMaterial.mDiffuse);
-                loadTexture("diffuseMap", renderable->mDiffuseMap);
+                loadUniform("specularColor", renderable->mMaterial.mSpecular);
+                loadUniform("shininess", renderable->mMaterial.mShininess);
 
                 /* DRAW */
                 renderableIt->get<MeshComponent>()->mMesh.draw();

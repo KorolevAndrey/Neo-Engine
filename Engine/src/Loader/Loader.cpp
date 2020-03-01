@@ -20,15 +20,6 @@ namespace neo {
     bool Loader::mVerbose = false;
     std::string Loader::RES_DIR = "";
 
-    Asset::Asset(Mesh* mesh) :
-        mesh(mesh) {
-        alphaTex = Library::getTexture("white");
-        ambientTexture = Library::getTexture("black");
-        diffuseTexture = Library::getTexture("black");
-        specularTexture = Library::getTexture("black");
-        displacementTexture = Library::getTexture("black");
-    }
-
     void Loader::init(const std::string &res, bool v) {
         RES_DIR = res;
         mVerbose = v;
@@ -111,27 +102,27 @@ namespace neo {
         // and tinyobjloader doesn't parse group/object names individually
         int objectCount = 0;
         for (auto& shape : shapes) {
-            Asset asset(Library::createEmptyMesh(fileName + "/" + shape.name + std::to_string(objectCount++)));
+            auto mesh = Library::createEmptyMesh(fileName + "/" + shape.name + std::to_string(objectCount++));
+            mesh->mPrimitiveType = shape.mesh.indices.size() ? GL_TRIANGLES : GL_TRIANGLE_STRIP;
+            Asset asset(*mesh);
 
             /* Upload */
-            asset.mesh->mPrimitiveType = GL_TRIANGLE_STRIP;
             if (shape.mesh.positions.size()) {
-                asset.mesh->addVertexBuffer(VertexType::Position, 0, 3, shape.mesh.positions);
+                mesh->addVertexBuffer(VertexType::Position, 0, 3, shape.mesh.positions);
             }
             if (shape.mesh.normals.size()) {
-                asset.mesh->addVertexBuffer(VertexType::Normal, 1, 3, shape.mesh.normals);
+                mesh->addVertexBuffer(VertexType::Normal, 1, 3, shape.mesh.normals);
             }
             if (shape.mesh.texcoords.size()) {
-                asset.mesh->addVertexBuffer(VertexType::Texture0, 2, 2, shape.mesh.texcoords);
+                mesh->addVertexBuffer(VertexType::Texture0, 2, 2, shape.mesh.texcoords);
             }
             std::vector<float> tangents, bitangents;
             if (MeshGenerator::getTangentsAndBiTangent(shape.mesh.positions, shape.mesh.normals, shape.mesh.texcoords, shape.mesh.indices, tangents, bitangents)) {
-                asset.mesh->addVertexBuffer(VertexType::Tangent, 3, 3, tangents);
-                asset.mesh->addVertexBuffer(VertexType::BiTangent, 4, 3, bitangents);
+                mesh->addVertexBuffer(VertexType::Tangent, 3, 3, tangents);
+                mesh->addVertexBuffer(VertexType::BiTangent, 4, 3, bitangents);
             }
             if (shape.mesh.indices.size()) {
-                asset.mesh->mPrimitiveType = GL_TRIANGLES;
-                asset.mesh->addElementBuffer(shape.mesh.indices);
+                mesh->addElementBuffer(shape.mesh.indices);
             }
 
             if (mVerbose) {

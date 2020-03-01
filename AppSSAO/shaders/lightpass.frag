@@ -1,6 +1,7 @@
 
-uniform sampler2D gNormal;
 uniform sampler2D gDiffuse;
+uniform sampler2D gNormal;
+uniform sampler2D gSpecular;
 uniform sampler2D gDepth;
 
 uniform mat4 invP, invV;
@@ -70,7 +71,8 @@ void main() {
 
     /* Retrieve remaining data from gbuffer */
     vec3 fragNor = texture(gNormal, fragTex).rgb * 2.f - vec3(1.f);
-    vec3 albedo = texture(gDiffuse, fragTex).rgb;
+    vec4 albedo = texture(gDiffuse, fragTex);
+    vec4 specular = texture(gSpecular, fragTex);
  
     vec3 L = normalize(lightDir);
     vec3 V = normalize(camPos - fragPos);
@@ -78,9 +80,9 @@ void main() {
     vec3 H = normalize(L + V);
     float lambert = clamp(dot(L, N), 0.f, 1.f);
     vec3 diffuseContrib = lightCol * lambert;
-    float s = pow(clamp(dot(H, N), 0.f, 1.f), 33.f);
-    vec3 specularContrib = lightCol * s * 0.33f;
+    vec3 specularContrib = lightCol * pow(clamp(dot(H, N), 0.f, 1.f), specular.a);
     color.a = 1.f;
-    color.rgb = diffuseContrib * albedo + specularContrib;
+    color.rgb = diffuseContrib * albedo.rgb;
+    color.rgb += specularContrib * specular.rgb;
     color.rgb *= attFactor;
 }

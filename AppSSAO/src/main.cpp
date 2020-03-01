@@ -52,16 +52,20 @@ int main() {
     {
         auto asset = Loader::loadMultiAsset("sponza.obj");
 
-        // TODO - more assets in gbuffer
+        // TODO - variable size post process
         // TODO - decals
-        // TODO - better lights / set up
+        // TODO - better lights
+        // TODO - VFC
         for (auto& a : asset) {
-            if (a.diffuseTexture && a.ambientTexture && a.displacementTexture) {
-                GameObject& go = Engine::createGameObject();
-                Engine::addComponent<SpatialComponent>(&go, glm::vec3(0.f), glm::vec3(0.2f));
-                Engine::addComponent<MeshComponent>(&go, *a.mesh);
-                Engine::addComponent<GBufferComponent>(&go, *a.ambientTexture, a.material);
-            }
+            GameObject& go = Engine::createGameObject();
+            Engine::addComponent<SpatialComponent>(&go, glm::vec3(0.f), glm::vec3(0.2f));
+            Engine::addComponent<MeshComponent>(&go, a.mesh);
+            Engine::addComponent<GBufferComponent>(&go,
+                a.alphaTex ? *a.alphaTex : *Library::getTexture("white"),
+                a.diffuseTexture ? *a.diffuseTexture : *Library::getTexture("black"),
+                a.specularTexture ? *a.specularTexture : *Library::getTexture("white"),
+                a.material
+            );
         }
     }
     /* Systems - order matters! */

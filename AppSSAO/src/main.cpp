@@ -7,6 +7,7 @@
 #include "AOShader.hpp"
 #include "CombineShader.hpp"
 #include "BlurShader.hpp"
+#include "DecalShader.hpp"
 
 #include "glm/gtc/matrix_transform.hpp"
 #include "Util/Util.hpp"
@@ -52,7 +53,6 @@ int main() {
     {
         auto asset = Loader::loadMultiAsset("sponza.obj");
 
-        // TODO - decals
         // TODO - better lights
         // TODO - VFC
         for (auto& a : asset) {
@@ -67,15 +67,26 @@ int main() {
             );
         }
     }
+
+    {
+        auto gameObject = &Engine::createGameObject();
+        Engine::addComponent<SpatialComponent>(gameObject, glm::vec3(0.f), glm::vec3(65.f));
+        Engine::addComponent<DecalRenderable>(gameObject, *Library::loadTexture("decal.png"));
+        Engine::addComponent<RotationComponent>(gameObject, glm::vec3(0, 1, 0));
+
+    }
+
     /* Systems - order matters! */
     Engine::addSystem<CameraControllerSystem>();
     Engine::addSystem<SinTranslateSystem>();
+    Engine::addSystem<RotationSystem>();
 
     /* Init renderer */
     Renderer::init("shaders/");
 
     // TODO - this ordering is super broken
     Renderer::addPreProcessShader<GBufferShader>("gbuffer.vert", "gbuffer.frag");
+    Renderer::addPreProcessShader<DecalShader>("decal.vert", "decal.frag");
     Renderer::addPreProcessShader<LightPassShader>("lightpass.vert", "lightpass.frag");  // run light pass after generating gbuffer
     Renderer::addPostProcessShader<AOShader>("ao.frag");    // first post process - generate ssao map 
     Renderer::addPostProcessShader<BlurShader>("blur.frag"); // blur ssao map

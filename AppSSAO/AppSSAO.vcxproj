@@ -125,6 +125,8 @@
     <ClInclude Include="src\AOShader.hpp" />
     <ClInclude Include="src\BlurShader.hpp" />
     <ClInclude Include="src\CombineShader.hpp" />
+    <ClInclude Include="src\DecalRenderable.hpp" />
+    <ClInclude Include="src\DecalShader.hpp" />
     <ClInclude Include="src\GBufferComponent.hpp" />
     <ClInclude Include="src\GBufferShader.hpp" />
     <ClInclude Include="src\LightPassShader.hpp" />
@@ -133,6 +135,8 @@
     <None Include="shaders\ao.frag" />
     <None Include="shaders\blur.frag" />
     <None Include="shaders\combine.frag" />
+    <None Include="shaders\decal.frag" />
+    <None Include="shaders\decal.vert" />
     <None Include="shaders\gbuffer.frag" />
     <None Include="shaders\gbuffer.vert" />
     <None Include="shaders\lightpass.frag" />

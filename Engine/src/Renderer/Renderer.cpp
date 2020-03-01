@@ -76,6 +76,7 @@ namespace neo {
 
         CHECK_GL(glClearColor(0.0f, 0.0f, 0.0f, 1.f));
 
+        CHECK_GL(glDepthMask(GL_TRUE));
         CHECK_GL(glEnable(GL_DEPTH_TEST));
         CHECK_GL(glDepthFunc(GL_LESS));
 

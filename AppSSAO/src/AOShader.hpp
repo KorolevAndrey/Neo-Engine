@@ -13,7 +13,7 @@ class AOShader : public PostProcessShader {
 
     public:
 
-        float radius = 0.28;
+        float radius = 0.28f;
         float bias = 0.52f;
 
         // TODO - this is full res..

@@ -206,15 +206,14 @@ namespace neo {
     }
 
     void Renderer::_renderPostProcess(Shader &shader, Framebuffer *input, Framebuffer *output) {
-        RENDERER_MP_ENTER("_renderPostProcess");
-
         // Reset output FBO
         output->bind();
         resetState();
         CHECK_GL(glDisable(GL_DEPTH_TEST));
         CHECK_GL(glClearColor(0.f, 0.f, 0.f, 1.f));
         CHECK_GL(glClear(GL_COLOR_BUFFER_BIT));
-        // TODO : messaging to resize fbo
+
+        // TODO : frameSize should be outputFBO's resolution
         glm::ivec2 frameSize = Window::getFrameSize();
         CHECK_GL(glViewport(0, 0, frameSize.x, frameSize.y));
 
@@ -226,8 +225,6 @@ namespace neo {
         // Bind input fbo texture
         shader.loadTexture("inputFBO", *input->mTextures[0]); 
         shader.loadTexture("inputDepth", *input->mTextures[1]); 
-
-        RENDERER_MP_LEAVE();
 
         RENDERER_MP_ENTERD(Post, "PostProcess Shaders", shader.mName.c_str());
         // Allow shader to do any prep (eg. bind uniforms) 

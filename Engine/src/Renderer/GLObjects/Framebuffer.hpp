@@ -72,6 +72,7 @@ namespace neo {
         
         void resize(const glm::uvec2 size) {
             bind();
+            // TODO - is this necessary..?
             CHECK_GL(glViewport(0, 0, size.x, size.y));
             for (auto& texture : mTextures) {
                 texture->resize(size);

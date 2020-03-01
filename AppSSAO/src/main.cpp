@@ -52,7 +52,6 @@ int main() {
     {
         auto asset = Loader::loadMultiAsset("sponza.obj");
 
-        // TODO - variable size post process
         // TODO - decals
         // TODO - better lights
         // TODO - VFC

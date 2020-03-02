@@ -47,7 +47,7 @@ namespace neo {
         bool intersect(const glm::vec3 position) const {
             auto spatial = mGameObject->getComponentByType<SpatialComponent>();
             NEO_ASSERT(spatial, "BoundingBox has no SpatialComponent");
-            // TODO - this is broke?
+            // TODO - this is broke? mesh.mmin needs to be taken into account
             return glm::length(glm::vec3(glm::inverse(spatial->getModelMatrix()) * glm::vec4(position, 1.f))) < getRadius();
         }
     };

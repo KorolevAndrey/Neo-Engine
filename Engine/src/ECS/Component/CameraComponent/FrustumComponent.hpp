@@ -29,18 +29,24 @@ namespace neo {
             glm::vec4 mFar;
 
             // Test if an object is inside the frustum
-            bool isInFrustum(const glm::vec3 position, const float radius) {
-                return _distanceToPlane(mLeft, position)   > -radius &&
-                       _distanceToPlane(mRight, position)  > -radius &&
-                       _distanceToPlane(mBottom, position) > -radius &&
-                       _distanceToPlane(mTop, position)    > -radius &&
-                       _distanceToPlane(mNear, position)   > -radius &&
-                       _distanceToPlane(mFar, position)    > -radius;
+            bool isInFrustum(const glm::vec3& position, const glm::vec3& scale, const glm::vec3& boxMin, const glm::vec3& boxMax) {
+                float radius = glm::distance(boxMax, boxMin) / 2.f;
+
+                // True position is the scaled center of the mesh + transition
+                glm::vec3 truePosition = boxMin + glm::normalize(boxMax - boxMin) * radius;
+                truePosition *= scale;
+                truePosition += position;
+                return _distanceToPlane(mLeft, truePosition)   > -radius &&
+                       _distanceToPlane(mRight, truePosition)  > -radius &&
+                       _distanceToPlane(mBottom, truePosition) > -radius &&
+                       _distanceToPlane(mTop, truePosition)    > -radius &&
+                       _distanceToPlane(mNear, truePosition)   > -radius &&
+                       _distanceToPlane(mFar, truePosition)    > -radius;
             }
 
         private:
 
-            float _distanceToPlane(glm::vec4 plane, glm::vec3 position) {
+            inline float _distanceToPlane(glm::vec4 plane, glm::vec3 position) {
                 return plane.x * position.x + plane.y * position.y + plane.z * position.z + plane.w;
             }
 

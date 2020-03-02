@@ -30,8 +30,7 @@ namespace neo {
                 // Frustum culling
                 if (mainCamera) {
                     if (const auto& frustumPlanes = mainCamera->mGameObject.getComponentByType<FrustumComponent>()) {
-                        float radius = glm::max(glm::max(selectableSpatial->getScale().x, selectableSpatial->getScale().y), selectableSpatial->getScale().z) * selectableBox->getRadius();
-                        if (!frustumPlanes->isInFrustum(selectableSpatial->getPosition(), radius)) {
+                        if (!frustumPlanes->isInFrustum(selectableSpatial->getPosition(), selectableSpatial->getScale(), selectableBox->mMin, selectableBox->mMax)) {
                             continue;
                         }
                     }

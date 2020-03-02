@@ -36,6 +36,8 @@ class DecalShader : public Shader {
             /* Bind gbuffer */
             auto gbuffer = Library::getFBO("gbuffer");
             loadTexture("gNormal", *gbuffer->mTextures[1]);
+            /* On some architectures, binding the depth buffer as a texture will decompress it 
+               http://amd-dev.wpengine.netdna-cdn.com/wordpress/media/2013/05/GCNPerformanceTweets.pdf*/
             loadTexture("gDepth",  *gbuffer->mTextures[3]);
 
             /* Render decals */

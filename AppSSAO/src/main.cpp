@@ -45,6 +45,7 @@ int main() {
     /* Game objects */
     Camera camera(45.f, 1.f, 1000.f, glm::vec3(0, 0.6f, 5), 0.4f, 20.f);
     Engine::addComponent<MainCameraComponent>(&camera.camera->getGameObject());
+    Engine::addComponent<FrustumComponent>(&camera.camera->getGameObject());
 
     std::vector<Light *> lights;
     lights.push_back(new Light(glm::vec3(25.f, 25.f, 0.f), glm::vec3(1.f), glm::vec3(100.f)));
@@ -53,8 +54,8 @@ int main() {
     {
         auto asset = Loader::loadMultiAsset("sponza.obj");
 
+        // TODO - decal bounding box
         // TODO - better lights
-        // TODO - VFC
         for (auto& a : asset) {
             GameObject& go = Engine::createGameObject();
             Engine::addComponent<SpatialComponent>(&go, glm::vec3(0.f), glm::vec3(0.2f));
@@ -65,6 +66,8 @@ int main() {
                 a.specularTexture ? *a.specularTexture : *Library::getTexture("white"),
                 a.material
             );
+            Engine::addComponent<BoundingBoxComponent>(&go, a.mesh);
+
         }
     }
 
@@ -78,6 +81,7 @@ int main() {
 
     /* Systems - order matters! */
     Engine::addSystem<CameraControllerSystem>();
+    Engine::addSystem<FrustumSystem>();
     Engine::addSystem<SinTranslateSystem>();
     Engine::addSystem<RotationSystem>();
 

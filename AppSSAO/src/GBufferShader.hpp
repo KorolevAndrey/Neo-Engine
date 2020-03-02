@@ -47,14 +47,26 @@ class GBufferShader : public Shader {
 
             bind();
 
+            FrustumComponent* cameraFrustum = nullptr;
             if (auto camera = Engine::getComponentTuple<MainCameraComponent, CameraComponent>()) {
                 loadUniform("P", camera->get<CameraComponent>()->getProj());
                 loadUniform("V", camera->get<CameraComponent>()->getView());
+                cameraFrustum = camera->mGameObject.getComponentByType<FrustumComponent>();
             }
 
             for (auto& renderableIt : Engine::getComponentTuples<GBufferComponent, MeshComponent, SpatialComponent>()) {
                 auto renderable = renderableIt->get<GBufferComponent>();
                 auto spatial = renderableIt->get<SpatialComponent>();
+
+                // VFC
+                if (cameraFrustum) {
+                    MICROPROFILE_SCOPEI("PhongShader", "VFC", MP_AUTO);
+                    if (const auto& boundingBox = renderableIt->mGameObject.getComponentByType<BoundingBoxComponent>()) {
+                        if (!cameraFrustum->isInFrustum(spatial->getPosition(), spatial->getScale(), boundingBox->mMin, boundingBox->mMax)) {
+                            continue;
+                        }
+                    }
+                }
 
                 loadUniform("M", spatial->getModelMatrix());
                 loadUniform("N", spatial->getNormalMatrix());
@@ -73,5 +85,5 @@ class GBufferShader : public Shader {
             }
 
             unbind();
-    }
+        }
 };

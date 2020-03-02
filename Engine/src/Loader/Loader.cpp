@@ -103,6 +103,10 @@ namespace neo {
         int objectCount = 0;
         for (auto& shape : shapes) {
             auto mesh = Library::createEmptyMesh(fileName + "/" + shape.name + std::to_string(objectCount++));
+
+            // Find min/max without actually doing a resize
+            _resize(mesh, shape.mesh.positions, false);
+
             mesh->mPrimitiveType = shape.mesh.indices.size() ? GL_TRIANGLES : GL_TRIANGLE_STRIP;
             Asset asset(*mesh);
 

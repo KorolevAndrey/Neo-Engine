@@ -42,6 +42,7 @@ class GBufferShader : public Shader {
         virtual void render() override {
             auto fbo = Library::getFBO("gbuffer");
             fbo->bind();
+            CHECK_GL(glViewport(0, 0, fbo->mTextures[0]->mWidth, fbo->mTextures[0]->mHeight));
             CHECK_GL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
             CHECK_GL(glDisable(GL_BLEND));
 

@@ -110,10 +110,6 @@ namespace neo {
             Renderer::addSceneShader<OutlineShader>();
         }
 
-        /* Add engine-specific systems */
-        // addSystem<RelationSystem>();
-        // addSystem<FinalTransformSystem>();
-
         /* Init systems */
         _initSystems();
 
@@ -137,7 +133,7 @@ namespace neo {
 
             /* Update each system */
             MICROPROFILE_ENTERI("System", "System update", MP_AUTO);
-            for (auto& system : mSystems) {
+            for (auto&& system : mSystems) {
                 if (system.second->mActive) {
                     MICROPROFILE_DEFINE(System, "System", system.second->mName.c_str(), MP_AUTO);
 		            MICROPROFILE_ENTER(System); 

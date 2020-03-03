@@ -20,17 +20,18 @@ class DecalShader : public Shader {
         virtual void render() override {
             auto fbo = Library::getFBO("gbuffer");
             fbo->bind();
-
-            CHECK_GL(glDisable(GL_CULL_FACE));
+            CHECK_GL(glViewport(0, 0, fbo->mTextures[0]->mWidth, fbo->mTextures[0]->mHeight));
             CHECK_GL(glDepthMask(GL_FALSE));
-            CHECK_GL(glDepthFunc(GL_LEQUAL));
 
             bind();
 
-            if (auto camera = Engine::getComponentTuple<MainCameraComponent, CameraComponent>()) {
+            FrustumComponent* cameraFrustum = nullptr;
+            auto camera = Engine::getComponentTuple<MainCameraComponent, CameraComponent, SpatialComponent>();
+            if (camera) {
                 loadUniform("P", camera->get<CameraComponent>()->getProj());
-                loadUniform("invPV", glm::inverse(camera->get<CameraComponent>()->getProj() * camera->get<CameraComponent>()->getView()));
                 loadUniform("V", camera->get<CameraComponent>()->getView());
+                loadUniform("invPV", glm::inverse(camera->get<CameraComponent>()->getProj() * camera->get<CameraComponent>()->getView()));
+                cameraFrustum = camera->mGameObject.getComponentByType<FrustumComponent>();
             }
 
             /* Bind gbuffer */
@@ -43,6 +44,23 @@ class DecalShader : public Shader {
             /* Render decals */
             for (auto& decal : Engine::getComponentTuples<DecalRenderable, SpatialComponent>()) {
                 auto spatial = decal->get<SpatialComponent>();
+                auto boundingBox = decal->mGameObject.getComponentByType<BoundingBoxComponent>();
+
+                // VFC 
+                if (cameraFrustum && boundingBox && !cameraFrustum->isInFrustum(spatial->getPosition(), spatial->getScale(), boundingBox->mMin, boundingBox->mMax)) {
+                    continue;
+                }
+
+                // Flip depth function if camera intersects decal
+                glm::vec3 cameraNear = camera->get<SpatialComponent>()->getPosition() + camera->get<SpatialComponent>()->getLookDir() * camera->get<CameraComponent>()->getNearFar().x;
+                if (boundingBox && boundingBox->intersect(cameraNear)) {
+                    CHECK_GL(glCullFace(GL_FRONT));
+                    CHECK_GL(glDepthFunc(GL_ALWAYS));
+                }
+                else {
+                    CHECK_GL(glCullFace(GL_BACK));
+                    CHECK_GL(glDepthFunc(GL_LESS));
+                }
                 loadUniform("M", spatial->getModelMatrix());
                 loadUniform("invM", glm::inverse(spatial->getModelMatrix()));
 

@@ -69,7 +69,7 @@ namespace neo {
                         MICROPROFILE_SCOPEI("ShadowCasterShader", "VFC", MP_AUTO);
                         if (const auto& boundingBox = renderableIt->mGameObject.getComponentByType<BoundingBoxComponent>()) {
                             float radius = glm::max(glm::max(renderableSpatial->getScale().x, renderableSpatial->getScale().y), renderableSpatial->getScale().z);
-                            if (!cameraFrustum->isInFrustum(renderableSpatial->getPosition(), radius)) {
+                            if (!cameraFrustum->isInFrustum(renderableSpatial->getPosition(), renderableSpatial->getScale(), boundingBox->mMin, boundingBox->mMax)) {
                                 continue;
                             }
                         }

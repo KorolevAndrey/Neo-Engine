@@ -13,6 +13,7 @@ namespace neo {
 
         public:
 
+            // TODO - this should be some variant of the phong shader.. #defines
             PhongShadowShader(float b = 0.00005f, int pcfSize = 2) :
                 Shader("PhongShadow Shader", 
                     R"(

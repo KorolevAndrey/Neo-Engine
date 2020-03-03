@@ -1,7 +1,6 @@
 #include <Engine.hpp>
 #include "Loader/Loader.hpp"
 
-#include "Renderer/Shader/WireframeShader.hpp"
 #include "GBufferShader.hpp"
 #include "LightPassShader.hpp"
 #include "AOShader.hpp"
@@ -55,7 +54,9 @@ int main() {
         auto asset = Loader::loadMultiAsset("sponza.obj");
 
         // TODO - decal bounding box
-        // TODO - better lights
+        // TODO - better light set up
+        // TODO - shadows?
+        // TODO - sized post process
         for (auto& a : asset) {
             GameObject& go = Engine::createGameObject();
             Engine::addComponent<SpatialComponent>(&go, glm::vec3(0.f), glm::vec3(0.2f));
@@ -67,16 +68,15 @@ int main() {
                 a.material
             );
             Engine::addComponent<BoundingBoxComponent>(&go, a.mesh);
-
         }
     }
 
+    // Decal
     {
         auto gameObject = &Engine::createGameObject();
         Engine::addComponent<SpatialComponent>(gameObject, glm::vec3(0.f), glm::vec3(65.f));
         Engine::addComponent<DecalRenderable>(gameObject, *Library::loadTexture("decal.png"));
         Engine::addComponent<RotationComponent>(gameObject, glm::vec3(0, 1, 0));
-
     }
 
     /* Systems - order matters! */
@@ -174,6 +174,7 @@ int main() {
                 return;
             }
             spat->imGuiEditor();
+            spat->setScale(glm::vec3(spat->getScale().x));
         }
     });
 

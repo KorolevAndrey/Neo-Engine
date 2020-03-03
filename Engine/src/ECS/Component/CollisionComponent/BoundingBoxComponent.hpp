@@ -48,7 +48,13 @@ namespace neo {
             auto spatial = mGameObject->getComponentByType<SpatialComponent>();
             NEO_ASSERT(spatial, "BoundingBox has no SpatialComponent");
             // TODO - this is broke? mesh.mmin needs to be taken into account
-            return glm::length(glm::vec3(glm::inverse(spatial->getModelMatrix()) * glm::vec4(position, 1.f))) < getRadius();
+            glm::vec3 localPosition = glm::vec3(glm::inverse(spatial->getModelMatrix()) * glm::vec4(position, 1.f));
+            return localPosition.x >= mMin.x &&
+                   localPosition.y >= mMin.y &&
+                   localPosition.z >= mMin.z &&
+                   localPosition.x <= mMax.x &&
+                   localPosition.y <= mMax.y &&
+                   localPosition.z <= mMax.z;
         }
     };
 }

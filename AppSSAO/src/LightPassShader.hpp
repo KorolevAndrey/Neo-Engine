@@ -37,6 +37,7 @@ class LightPassShader : public Shader {
             auto fbo = Library::getFBO("lightpass");
             fbo->bind();
             CHECK_GL(glClear(GL_COLOR_BUFFER_BIT));
+            CHECK_GL(glViewport(0, 0, fbo->mTextures[0]->mWidth, fbo->mTextures[0]->mHeight));
 
             bind();
 
@@ -55,10 +56,10 @@ class LightPassShader : public Shader {
 
             /* Bind gbuffer */
             auto gbuffer = Library::getFBO("gbuffer");
-            loadTexture("gDiffuse", *gbuffer->mTextures[0]);
-            loadTexture("gNormal",  *gbuffer->mTextures[1]);
-            loadTexture("gSpecular",  *gbuffer->mTextures[2]);
-            loadTexture("gDepth",   *gbuffer->mTextures[3]);
+            loadTexture("gDiffuse",  *gbuffer->mTextures[0]);
+            loadTexture("gNormal",   *gbuffer->mTextures[1]);
+            loadTexture("gSpecular", *gbuffer->mTextures[2]);
+            loadTexture("gDepth",    *gbuffer->mTextures[3]);
 
             /* Render light volumes */
             // TODO : instanced?
@@ -77,6 +78,7 @@ class LightPassShader : public Shader {
                 else {
                     CHECK_GL(glCullFace(GL_BACK));
                 }
+
                 Library::getMesh("sphere")->draw();
             }
 

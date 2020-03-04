@@ -1,4 +1,5 @@
 #include <Engine.hpp>
+#include "Loader/Loader.hpp"
 
 #include "PerspectiveUpdateSystem.hpp"
 
@@ -83,22 +84,19 @@ int main() {
     // Ortho camera, shadow camera, light
     Light light(glm::vec3(10.f, 20.f, 0.f), true);
 
-    // Renderable
-    for (int i = 0; i < 30; i++) {
-        Renderable sphere(Util::genRandomBool() ? Library::getMesh("cube") : Library::getMesh("sphere"), glm::vec3(Util::genRandom(-10.f, 10.f), Util::genRandom(0.5f, 1.f), Util::genRandom(-10.f, 10.f)), glm::vec3(0.5f));
-        Material material;
-        material.mAmbient = glm::vec3(0.3f);
-        material.mDiffuse = Util::genRandomVec3();
-        Engine::addComponent<renderable::PhongShadowRenderable>(sphere.gameObject, *Library::getTexture("black"), material);
-        Engine::addComponent<renderable::ShadowCasterRenderable>(sphere.gameObject, *Library::getTexture("black"));
-    }
+    /* Sponza object */
+    {
+        auto asset = Loader::loadMultiAsset("sponza.obj");
 
-    /* Ground plane */
-    Renderable receiver(Library::getMesh("quad"), glm::vec3(0.f, 0.f, 0.f), glm::vec3(50.f), glm::vec3(-1.56f, 0, 0));
-    Material material;
-    material.mAmbient = glm::vec3(0.2f);
-    material.mDiffuse = glm::vec3(0.7f);
-    Engine::addComponent<renderable::PhongShadowRenderable>(receiver.gameObject, *Library::getTexture("black"), material);
+        // TODO - these should have some parent/child thing going on..
+        for (auto& a : asset) {
+            GameObject& go = Engine::createGameObject();
+            Engine::addComponent<SpatialComponent>(&go, glm::vec3(0.f), glm::vec3(0.2f));
+            Engine::addComponent<MeshComponent>(&go, a.mesh);
+            Engine::addComponent<renderable::PhongShadowRenderable>(&go, a.diffuseTexture ? *a.diffuseTexture : *Library::getTexture("black"), a.material);
+            Engine::addComponent<renderable::ShadowCasterRenderable>(&go, a.alphaTex ? *a.alphaTex : *Library::getTexture("white"));
+        }
+    }
 
     /* Systems - order matters! */
     Engine::addSystem<CameraControllerSystem>(); // Update camera

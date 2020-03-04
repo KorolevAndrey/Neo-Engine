@@ -59,7 +59,8 @@ namespace neo {
                         albedo.rgb += diffuseColor;
 
                         float visibility = getShadowVisibility(pcfSize, shadowMap, shadowCoord, bias);
-                        vec3 phong = getPhong(fragNor, fragPos.rgb, camPos, lightPos, lightAtt, lightCol, albedo.rgb, specularColor, shine);
+
+                        vec3 phong = getPhong(fragNor, camPos - fragPos.rgb, lightPos, lightAtt, lightCol, albedo.rgb, specularColor, shine);
                         color.rgb = albedo.rgb * ambientColor + 
                                     visibility * phong;
                         color.a = albedo.a;
@@ -118,7 +119,7 @@ namespace neo {
                         MICROPROFILE_SCOPEI("PhongShaderShader", "VFC", MP_AUTO);
                         if (const auto& boundingBox = renderableIt->mGameObject.getComponentByType<BoundingBoxComponent>()) {
                             float radius = glm::max(glm::max(renderableSpatial->getScale().x, renderableSpatial->getScale().y), renderableSpatial->getScale().z) * boundingBox->getRadius();
-                            if (!cameraFrustum->isInFrustum(renderableSpatial->getPosition(), radius)) {
+                            if (!cameraFrustum->isInFrustum(renderableSpatial->getPosition(), renderableSpatial->getScale(), boundingBox->mMin, boundingBox->mMax)) {
                                 continue;
                             }
                         }

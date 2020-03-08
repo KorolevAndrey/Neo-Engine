@@ -130,6 +130,7 @@
     <ClInclude Include="src\GBufferComponent.hpp" />
     <ClInclude Include="src\GBufferShader.hpp" />
     <ClInclude Include="src\LightParticleComponent.hpp" />
+    <ClInclude Include="src\LightParticleShader.hpp" />
     <ClInclude Include="src\LightParticleSystem.hpp" />
     <ClInclude Include="src\LightPassShader.hpp" />
   </ItemGroup>
@@ -143,6 +144,8 @@
     <None Include="shaders\gbuffer.vert" />
     <None Include="shaders\lightpass.frag" />
     <None Include="shaders\lightpass.vert" />
+    <None Include="shaders\particlebillboard.frag" />
+    <None Include="shaders\particlebillboard.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

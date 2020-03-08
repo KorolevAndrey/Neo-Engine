@@ -50,6 +50,9 @@
     <ClInclude Include="src\LightParticleSystem.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\LightParticleShader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\gbuffer.vert" />
@@ -61,5 +64,7 @@
     <None Include="shaders\blur.frag" />
     <None Include="shaders\decal.vert" />
     <None Include="shaders\decal.frag" />
+    <None Include="shaders\particlebillboard.vert" />
+    <None Include="shaders\particlebillboard.frag" />
   </ItemGroup>
 </Project>

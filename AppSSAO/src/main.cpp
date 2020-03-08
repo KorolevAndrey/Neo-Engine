@@ -9,6 +9,7 @@
 #include "DecalShader.hpp"
 
 #include "LightParticleSystem.hpp"
+#include "LightParticleShader.hpp"
 
 #include "glm/gtc/matrix_transform.hpp"
 #include "Util/Util.hpp"
@@ -55,8 +56,8 @@ int main() {
     {
         auto asset = Loader::loadMultiAsset("sponza.obj");
 
-        // TODO - decal bounding box
         // TODO - particle lights rendering
+        // TODO - decal bounding box
         // TODO - shadows? directional light?
         // TODO - sized post process
         for (auto& a : asset) {
@@ -106,6 +107,7 @@ int main() {
     Renderer::addPreProcessShader<GBufferShader>("gbuffer.vert", "gbuffer.frag");
     Renderer::addPreProcessShader<DecalShader>("decal.vert", "decal.frag");
     Renderer::addPreProcessShader<LightPassShader>("lightpass.vert", "lightpass.frag");  // run light pass after generating gbuffer
+    Renderer::addPreProcessShader<LightParticleShader>("particlebillboard.vert", "particlebillboard.frag");
     Renderer::addPostProcessShader<AOShader>("ao.frag");    // first post process - generate ssao map 
     Renderer::addPostProcessShader<BlurShader>("blur.frag"); // blur ssao map
     Renderer::addPostProcessShader<CombineShader>("combine.frag");    // combine light pass and ssao 

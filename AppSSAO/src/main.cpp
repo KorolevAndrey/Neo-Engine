@@ -54,7 +54,7 @@ int main() {
         auto asset = Loader::loadMultiAsset("sponza.obj");
 
         // TODO - decal bounding box
-        // TODO - better light set up
+        // TODO - particle lights?
         // TODO - shadows?
         // TODO - sized post process
         for (auto& a : asset) {
@@ -69,6 +69,18 @@ int main() {
             );
             Engine::addComponent<BoundingBoxComponent>(&go, a.mesh);
         }
+
+        // Baked lights for this specific sponza and scaling
+        // Corner vases
+            lights.push_back(new Light(glm::vec3(-240.44, 38.23,  80.76), glm::vec3(0.9f, 0.56f, 0.25f), glm::vec3(75.f)));
+        lights.push_back(new Light(glm::vec3(-240.44, 38.23, -89.80), glm::vec3(0.9f, 0.56f, 0.25f), glm::vec3(75.f)));
+        lights.push_back(new Light(glm::vec3( 223.94, 38.23, -89.80), glm::vec3(0.9f, 0.56f, 0.25f), glm::vec3(75.f)));
+        lights.push_back(new Light(glm::vec3( 223.94, 38.23,  80.76), glm::vec3(0.9f, 0.56f, 0.25f), glm::vec3(75.f)));
+        // Hanging vases
+        lights.push_back(new Light(glm::vec3(97.1f, 24.9f,  28.67f), glm::vec3(0.8f, 0.24f, 0.18f), glm::vec3(75.f)));
+        lights.push_back(new Light(glm::vec3(97.1f, 24.9f, -43.94f), glm::vec3(0.8f, 0.24f, 0.18f), glm::vec3(75.f)));
+        lights.push_back(new Light(glm::vec3(-123.4f, 24.9f, -43.9f), glm::vec3(0.8f, 0.24f, 0.18f), glm::vec3(75.f)));
+        lights.push_back(new Light(glm::vec3(-123.4f, 24.9f,  28.6f), glm::vec3(0.8f, 0.24f, 0.18f), glm::vec3(75.f)));
     }
 
     // Decal

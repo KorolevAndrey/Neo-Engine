@@ -13,16 +13,14 @@ class LightParticleShader : public Shader {
 
     public:
 
+        Texture* fireTexture;
+
         LightParticleShader(const std::string &vert, const std::string &frag) :
             Shader("LightParticle Shader", vert, frag) {
+            fireTexture = Library::loadTexture("f.png");
         }
 
         virtual void render() override {
-            auto mainCamera = Engine::getComponentTuple<MainCameraComponent, CameraComponent, SpatialComponent>();
-            if (!mainCamera) {
-                return;
-            }
-
             auto fbo = Library::getFBO("lightpass");
             fbo->bind();
             CHECK_GL(glViewport(0, 0, fbo->mTextures[0]->mWidth, fbo->mTextures[0]->mHeight));
@@ -38,11 +36,12 @@ class LightParticleShader : public Shader {
                 loadUniform("Vi", Vi);
             }
 
+            loadTexture("fire", *fireTexture);
+
             /* Render light billboard */
             // TODO : instanced?
             for (auto&& light : Engine::getComponentTuples<LightParticleComponent, SpatialComponent>()) {
                 loadUniform("M", light->get<SpatialComponent>()->getModelMatrix());
-                loadUniform("center", light->get<SpatialComponent>()->getPosition());
 
                 /* DRAW */
                 Library::getMesh("quad")->draw();

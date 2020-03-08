@@ -11,5 +11,9 @@ out vec2 fragTex;
 void main() {
     vec4 worldPos = M * Vi * vec4(vertPos, 1.0);
     gl_Position = P * V * worldPos;
+
     fragTex = (vertPos.xy + 1) / 2.f;
+
+    // reduce by 32 to only sample 1/32 of the fire atlas
+    fragTex.x /= 32.0;
 }

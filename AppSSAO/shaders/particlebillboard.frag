@@ -1,10 +1,11 @@
 
 in vec2 fragTex;
 
-uniform vec3 center;
+uniform sampler2D fire;
 
 out vec4 color;
 
 void main() {
-    color = vec4(fragTex, 0.0, 1.0);
+    vec4 s = texture(fire, fragTex);
+    color = vec4(s.rgb, (s.r + s.g + s.b) / 3.0);
 }

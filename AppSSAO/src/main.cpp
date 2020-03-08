@@ -8,6 +8,8 @@
 #include "BlurShader.hpp"
 #include "DecalShader.hpp"
 
+#include "LightParticleSystem.hpp"
+
 #include "glm/gtc/matrix_transform.hpp"
 #include "Util/Util.hpp"
 
@@ -54,8 +56,8 @@ int main() {
         auto asset = Loader::loadMultiAsset("sponza.obj");
 
         // TODO - decal bounding box
-        // TODO - particle lights?
-        // TODO - shadows?
+        // TODO - particle lights rendering
+        // TODO - shadows? directional light?
         // TODO - sized post process
         for (auto& a : asset) {
             GameObject& go = Engine::createGameObject();
@@ -72,15 +74,15 @@ int main() {
 
         // Baked lights for this specific sponza and scaling
         // Corner vases
-            lights.push_back(new Light(glm::vec3(-240.44, 38.23,  80.76), glm::vec3(0.9f, 0.56f, 0.25f), glm::vec3(75.f)));
-        lights.push_back(new Light(glm::vec3(-240.44, 38.23, -89.80), glm::vec3(0.9f, 0.56f, 0.25f), glm::vec3(75.f)));
-        lights.push_back(new Light(glm::vec3( 223.94, 38.23, -89.80), glm::vec3(0.9f, 0.56f, 0.25f), glm::vec3(75.f)));
-        lights.push_back(new Light(glm::vec3( 223.94, 38.23,  80.76), glm::vec3(0.9f, 0.56f, 0.25f), glm::vec3(75.f)));
-        // Hanging vases
-        lights.push_back(new Light(glm::vec3(97.1f, 24.9f,  28.67f), glm::vec3(0.8f, 0.24f, 0.18f), glm::vec3(75.f)));
-        lights.push_back(new Light(glm::vec3(97.1f, 24.9f, -43.94f), glm::vec3(0.8f, 0.24f, 0.18f), glm::vec3(75.f)));
-        lights.push_back(new Light(glm::vec3(-123.4f, 24.9f, -43.9f), glm::vec3(0.8f, 0.24f, 0.18f), glm::vec3(75.f)));
-        lights.push_back(new Light(glm::vec3(-123.4f, 24.9f,  28.6f), glm::vec3(0.8f, 0.24f, 0.18f), glm::vec3(75.f)));
+        // lights.push_back(new Light(glm::vec3(-240.44, 38.23,  80.76), glm::vec3(0.9f, 0.56f, 0.25f), glm::vec3(75.f)));
+        // lights.push_back(new Light(glm::vec3(-240.44, 38.23, -89.80), glm::vec3(0.9f, 0.56f, 0.25f), glm::vec3(75.f)));
+        // lights.push_back(new Light(glm::vec3( 223.94, 38.23, -89.80), glm::vec3(0.9f, 0.56f, 0.25f), glm::vec3(75.f)));
+        // lights.push_back(new Light(glm::vec3( 223.94, 38.23,  80.76), glm::vec3(0.9f, 0.56f, 0.25f), glm::vec3(75.f)));
+        // // Hanging vases
+        // lights.push_back(new Light(glm::vec3(97.1f, 24.9f,  28.67f), glm::vec3(0.8f, 0.24f, 0.18f), glm::vec3(35.f)));
+        // lights.push_back(new Light(glm::vec3(97.1f, 24.9f, -43.94f), glm::vec3(0.8f, 0.24f, 0.18f), glm::vec3(35.f)));
+        // lights.push_back(new Light(glm::vec3(-123.4f, 24.9f, -43.9f), glm::vec3(0.8f, 0.24f, 0.18f), glm::vec3(35.f)));
+        // lights.push_back(new Light(glm::vec3(-123.4f, 24.9f,  28.6f), glm::vec3(0.8f, 0.24f, 0.18f), glm::vec3(35.f)));
     }
 
     // Decal
@@ -94,8 +96,8 @@ int main() {
     /* Systems - order matters! */
     Engine::addSystem<CameraControllerSystem>();
     Engine::addSystem<FrustumSystem>();
-    Engine::addSystem<SinTranslateSystem>();
     Engine::addSystem<RotationSystem>();
+    Engine::addSystem<LightParticleSystem>();
 
     /* Init renderer */
     Renderer::init("shaders/");
@@ -116,17 +118,11 @@ int main() {
                 static glm::vec3 pos(0.f);
                 static float size(15.f);
                 static glm::vec3 color(1.f);
-                static float yOffset(10.f);
                 ImGui::SliderFloat3("Position", glm::value_ptr(pos), -25.f, 25.f);
                 ImGui::SliderFloat("Scale", &size, 15.f, 100.f);
                 ImGui::SliderFloat3("Color", glm::value_ptr(color), 0.01f, 1.f);
-                ImGui::SliderFloat("Offset", &yOffset, 0.f, 25.f);
                 if (ImGui::Button("Create")) {
-                    auto light = new Light(pos, color, glm::vec3(size));
-                    if (yOffset) {
-                        Engine::addComponent<SinTranslateComponent>(light->gameObject, glm::vec3(0.f, yOffset, 0.f), pos);
-                    }
-                    lights.push_back(light);
+                    lights.push_back(new Light(pos, color, glm::vec3(size)));
                     index = lights.size() - 1;
                 }
                 ImGui::TreePop();
@@ -143,15 +139,11 @@ int main() {
                 static glm::vec3 maxOffset(0.f);
                 static float minScale(0.f);
                 static float maxScale(10.f);
-                static float minSinOffset(0.f);
-                static float maxSinOffset(0.f);
                 ImGui::SliderInt("Num lights", &numLights, 0, 1000);
                 ImGui::SliderFloat3("Min offset", glm::value_ptr(minOffset), -100.f, 100.f);
                 ImGui::SliderFloat3("Max offset", glm::value_ptr(maxOffset), -100.f, 100.f);
                 ImGui::SliderFloat("Min scale", &minScale, 0.f, maxScale);
                 ImGui::SliderFloat("Max scale", &maxScale, minScale, 100.f);
-                ImGui::SliderFloat("Min sin", &minSinOffset, 0.f, 15.f);
-                ImGui::SliderFloat("Max sin", &maxSinOffset, 0.f, 15.f);
                 if (ImGui::Button("Create light")) {
                     for (int i = 0; i < numLights; i++) {
                         glm::vec3 position = glm::vec3(
@@ -159,11 +151,7 @@ int main() {
                             Util::genRandom(minOffset.y, maxOffset.y),
                             Util::genRandom(minOffset.z, maxOffset.z)
                         );
-                        glm::vec3 color = Util::genRandomVec3();
-                        float size = Util::genRandom(minScale, maxScale);
-                        auto light = new Light(position, color, glm::vec3(size));
-                        Engine::addComponent<SinTranslateComponent>(light->gameObject, glm::vec3(0.f, Util::genRandom(minSinOffset, maxSinOffset), 0.f), position);
-                        lights.push_back(light);
+                        lights.push_back(new Light(position, Util::genRandomVec3(), glm::vec3(Util::genRandom(minScale, maxScale))));
                     }
                 }
                 ImGui::TreePop();

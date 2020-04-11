@@ -11,9 +11,6 @@ uniform vec3 lightPos;
 uniform vec3 lightCol;
 uniform float lightRadius;
 
-uniform bool showLights;
-uniform float showRadius;
-
 out vec4 color;
 
 float raySphereIntersect(vec3 r0, vec3 rd, vec3 s0, float sr)
@@ -51,14 +48,6 @@ void main() {
     /* Calculate fragment's world position */
     float depth = texture(gDepth, fragTex).r;
     vec3 fragPos = reconstructWorldPos(vec3(fragTex, depth));
-
-    if (showLights) {
-        float rayDist = raySphereIntersect(camPos, normalize(fragPos - camPos), lightPos, lightRadius * showRadius);
-        if (rayDist > 0.0 && rayDist < length(fragPos - camPos)) {
-            color = vec4(lightCol, 1.f);
-            return;
-        }
-    }
 
     /* Calculate attenuation 
      * Early discard if fragment is outside of light volume */

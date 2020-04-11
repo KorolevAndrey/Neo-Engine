@@ -11,9 +11,6 @@ class LightPassShader : public Shader {
 
     public:
 
-        bool showLights = false;
-        float showRadius = 0.1f;
-
         LightPassShader(const std::string &vert, const std::string &frag) :
             Shader("LightPass Shader", vert, frag) {
             // Create render target
@@ -46,9 +43,6 @@ class LightPassShader : public Shader {
             CHECK_GL(glBlendFunc(GL_ONE, GL_ONE));
             CHECK_GL(glDisable(GL_DEPTH_TEST));
             CHECK_GL(glEnable(GL_CULL_FACE));
-
-            loadUniform("showLights", showLights);
-            loadUniform("showRadius", showRadius);
 
             loadUniform("P", mainCamera->get<CameraComponent>()->getProj());
             loadUniform("V", mainCamera->get<CameraComponent>()->getView());
@@ -88,10 +82,5 @@ class LightPassShader : public Shader {
         }
         
         virtual void imguiEditor() override {
-            ImGui::Checkbox("Show lights", &showLights);
-            if (showLights) {
-                ImGui::SameLine();
-                ImGui::SliderFloat("Show radius", &showRadius, 0.01f, 1.f);
-            }
         }
 };

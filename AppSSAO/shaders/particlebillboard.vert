@@ -13,7 +13,4 @@ void main() {
     gl_Position = P * V * worldPos;
 
     fragTex = (vertPos.xy + 1) / 2.f;
-
-    // reduce by 32 to only sample 1/32 of the fire atlas
-    fragTex.x /= 32.0;
 }

@@ -19,10 +19,8 @@ class CombineShader : public PostProcessShader {
         {}
 
         virtual void render() override {
-            loadUniform("showAO", showAO);
-
             // Bind light pass output
-            loadTexture("lightOutput", *Library::getFBO("lightpass")->mTextures[0]);
+            loadTexture("lightOutput", showAO ? *Library::getFBO("lightpass")->mTextures[0] : *Library::getTexture("white"));
         }
 
         virtual void imguiEditor() override {

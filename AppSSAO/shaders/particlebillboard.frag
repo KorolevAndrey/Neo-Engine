@@ -1,11 +1,15 @@
 
 in vec2 fragTex;
 
-uniform sampler2D fire;
+uniform vec3 lightCol;
 
 out vec4 color;
 
 void main() {
-    vec4 s = texture(fire, fragTex);
-    color = vec4(s.rgb, (s.r + s.g + s.b) / 3.0);
+    // Quick fall-off computation
+    float r = length(fragTex*2.0-1.0)*3.0;
+    float i = exp(-r*r);
+    if (i < 0.01) discard;
+
+    color = vec4(i);
 }

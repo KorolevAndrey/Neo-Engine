@@ -27,21 +27,28 @@ class LightParticleShader : public Shader {
 
             bind();
 
-            if (auto camera = Engine::getComponentTuple<MainCameraComponent, CameraComponent>()) {
-                loadUniform("P", camera->get<CameraComponent>()->getProj());
-                loadUniform("V", camera->get<CameraComponent>()->getView());
-                glm::mat4 Vi = camera->get<CameraComponent>()->getView();
-                Vi[3][0] = Vi[3][1] = Vi[3][2] = 0.f;
-                Vi = glm::transpose(Vi);
-                loadUniform("Vi", Vi);
-            }
+            auto camera = Engine::getComponentTuple<MainCameraComponent, CameraComponent, SpatialComponent>();
+            NEO_ASSERT(camera, "No camera!");
+            loadUniform("P", camera->get<CameraComponent>()->getProj());
+            loadUniform("V", camera->get<CameraComponent>()->getView());
+            glm::mat4 Vi = camera->get<CameraComponent>()->getView();
+            Vi[3][0] = Vi[3][1] = Vi[3][2] = 0.f;
+            Vi = glm::transpose(Vi);
+            loadUniform("Vi", Vi);
 
-            loadTexture("fire", *fireTexture);
+
+            // sort light indices -- component tuples aren't copyable 
+            auto&& lights = Engine::getComponentTuples<LightParticleComponent, SpatialComponent>();
 
             /* Render light billboard */
             // TODO : instanced?
             for (auto&& light : Engine::getComponentTuples<LightParticleComponent, SpatialComponent>()) {
+                
+                // TODO VFC
+
                 loadUniform("M", light->get<SpatialComponent>()->getModelMatrix());
+
+                loadUniform("lightCol", light->get<LightParticleComponent>()->base.color);
 
                 /* DRAW */
                 Library::getMesh("quad")->draw();
